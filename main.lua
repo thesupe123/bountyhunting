@@ -97,7 +97,7 @@ markDoorsAsPassable()
 
 local function generateWaypoints(origin: Vector3, endPosition: Vector3, returnstate: string): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
-		AgentRadius = 3,
+		AgentRadius = 4,
 		AgentHeight = 5,
 		AgentCanJump = true,
 	})
