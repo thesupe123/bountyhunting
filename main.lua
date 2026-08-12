@@ -133,7 +133,7 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		
 		return path:GetWaypoints()
 	else
-		warn("Pathfinding failed: " + tostring(errorMessage))
+		warn("Pathfinding failed: " .. tostring(errorMessage))
 		return {}
 	end
 end
