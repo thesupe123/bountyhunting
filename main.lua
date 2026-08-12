@@ -64,7 +64,7 @@ local function joinServer(jobid)
     return success
 end
 
-local function generateWaypointsWithMarkers(origin: Vector3, endPosition: Vector3): {PathWaypoint}
+local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
 		AgentRadius = 2,
 		AgentHeight = 5,
@@ -183,7 +183,7 @@ runService.RenderStepped:Connect(function(dt)
             local direction = Vector3.new(0, 1, 0) * raycastDistance
             local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
             if result then
-                print("Under roof")
+                print("under something")
                 local closestSpawn = nil
                 local closestDistance = math.huge
                 for _, spawn in ipairs(spawnTP) do
@@ -194,7 +194,7 @@ runService.RenderStepped:Connect(function(dt)
                     end
                 end
                 state = "leaving"
-                path = generateWaypointsWithMarkers(character.HumanoidRootPart.Position, closestSpawn)
+                path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn)
           end
         end
         if state == "leaving" then
