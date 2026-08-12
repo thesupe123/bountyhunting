@@ -152,37 +152,6 @@ local path = {}
 
 local alive = true
 
-localPlayer.CharacterAdded:Connect(function(newCharacter)
-    character = newCharacter
-    alive = true
-    state = "start"
-     local raycastParams = RaycastParams.new()
-    -- Ignore the player's own character so it doesn't hit itself
-    raycastParams.FilterDescendantsInstances = {character}
-    raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-    raycastParams.IgnoreWater = true
-    local raycastDistance = 100
-    local direction = Vector3.new(0, 1, 0) * raycastDistance
-    local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
-    if result then
-        print("under something")
-        local closestSpawn = nil
-        local closestDistance = math.huge
-        for _, spawn in ipairs(spawnTP) do
-            local distance = (spawn - character.HumanoidRootPart.Position).Magnitude
-            if distance < closestDistance then
-                closestDistance = distance
-                closestSpawn = spawn
-            end
-        end
-        state = "leaving"
-        path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn, "start")
-    else
-        print("not under something")
-        state = "vehiclefind"
-    end
-end)
-
 if localPlayer.TeamValue.Value ~= "Police" then
     firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police.Activated)
 end
@@ -191,6 +160,12 @@ task.wait(5)
 
 character.Humanoid.Died:Connect(function()
     alive = false
+end)
+
+localPlayer.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    alive = true
+    state = "start"
 end)
 
 local function spawnVehicle(VehicleName)
@@ -205,9 +180,35 @@ local cruisealt = 500
 local targetPlayer = nil
 local targetVehicle = nil
 
-local spawnedUnder = false
 runService.RenderStepped:Connect(function(dt)
     if alive then
+        if state == "start" then
+            local raycastParams = RaycastParams.new()
+            -- Ignore the player's own character so it doesn't hit itself
+            raycastParams.FilterDescendantsInstances = {character}
+            raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+            raycastParams.IgnoreWater = true
+            local raycastDistance = 100
+            local direction = Vector3.new(0, 1, 0) * raycastDistance
+            local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
+            if result then
+                print("under something")
+                local closestSpawn = nil
+                local closestDistance = math.huge
+                for _, spawn in ipairs(spawnTP) do
+                    local distance = (spawn - character.HumanoidRootPart.Position).Magnitude
+                    if distance < closestDistance then
+                        closestDistance = distance
+                        closestSpawn = spawn
+                    end
+                end
+                state = "leaving"
+                path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn, "start")
+            else
+                print("not under something")
+                state = "vehiclefind"
+            end
+        end
         if state == "leaving" then
            if #path > 0 then
                 local nextWaypoint = path[1]
