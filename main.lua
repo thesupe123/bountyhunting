@@ -26,7 +26,7 @@ local spawnTP = {
     Vector3.new(1805,28, -802)
 }
 
-local function getBounty()
+local function getTotalBounty()
     local board = workspace:WaitForChild("BountyBoard")
     local wanted = board.Board.MostWanted.Board
     local bounty = 0
@@ -44,6 +44,56 @@ local function getBounty()
         end
     end
     return bounty
+end
+
+local Players = game:GetService("Players")
+
+local function getSortedBounties()
+    local board = workspace:WaitForChild("BountyBoard")
+    local wanted = board.Board.MostWanted.Board
+    local bountyTable = {}
+
+    for _, playerFrame in pairs(wanted:GetChildren()) do
+        local bountyTextObject = playerFrame:FindFirstChild("BountyText")
+        -- Change "DisplayName" to whatever the actual text label for the name is called in the frame
+        local displayNameObject = playerFrame:FindFirstChild("DisplayName") 
+        
+        if bountyTextObject and displayNameObject then
+            -- 1. Calculate the Bounty
+            local splitTable = string.split(bountyTextObject.Text, "$")
+            local rawAmount = splitTable[2]
+            local bountyAmount = 0
+            
+            if rawAmount then
+                local cleanText = string.gsub(rawAmount, ",", "")
+                bountyAmount = tonumber(cleanText) or 0
+            end
+            
+            -- 2. Convert Display Name to Username
+            local uiDisplayName = displayNameObject.Text
+            local actualUsername = uiDisplayName -- Fallback just in case they left the game
+            
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.DisplayName == uiDisplayName then
+                    actualUsername = player.Name
+                    break
+                end
+            end
+            
+            -- 3. Insert into our table
+            table.insert(bountyTable, {
+                Username = actualUsername,
+                Bounty = bountyAmount
+            })
+        end
+    end
+
+    -- 4. Sort the table from Highest to Lowest
+    table.sort(bountyTable, function(a, b)
+        return a.Bounty > b.Bounty 
+    end)
+
+    return bountyTable
 end
 
 local function joinServer(jobid)
@@ -216,6 +266,7 @@ end
 
 local walkspeed = 30
 local flyspeed = 120
+local carflyspeed = 300
 local cruisealt = 500
 
 local targetPlayer = nil
@@ -244,7 +295,7 @@ runService.RenderStepped:Connect(function(dt)
                 local direction = (nextWaypoint.Position - character.HumanoidRootPart.Position).Unit
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * walkspeed * dt)
                 
-                if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
+                if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 2 then
                     print("Reached waypoint:", nextWaypoint.Position)
 
                     if nextWaypoint.Action == Enum.PathWaypointAction.Jump then
@@ -285,6 +336,20 @@ runService.RenderStepped:Connect(function(dt)
         end
         if state == "vehiclespawn" then
             spawnVehicle("Camaro")
+            --find closest vehicle and set it to targetVehicle
+            local vehicles = workspace:WaitForChild("Vehicles"):GetChildren()
+            local closestVehicle = nil
+            local closestDistance = math.huge
+            local maxDistance = 20
+            for _,vehicle in pairs(vehicles) do
+                local distance = (vehicle.PrimaryPart.Position - character.HumanoidRootPart.Position).Magnitude
+                if distance < closestDistance and distance <= maxDistance then
+                    closestDistance = distance
+                    closestVehicle = vehicle
+                end
+            end
+            targetVehicle = closestVehicle
+            print("Spawned vehicle:", targetVehicle.Name, "at distance:", closestDistance)
             state = "locatetarget"
         end
         if state == "vehicleapproach" then
@@ -299,7 +364,7 @@ runService.RenderStepped:Connect(function(dt)
                 local direction = (nextWaypoint.Position - character.HumanoidRootPart.Position).Unit
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * walkspeed * dt)
                 
-                if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
+                if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 2 then
                     print("Reached waypoint:", nextWaypoint.Position)
 
                     if nextWaypoint.Action == Enum.PathWaypointAction.Jump then
@@ -315,6 +380,26 @@ runService.RenderStepped:Connect(function(dt)
                         print("Path completed! Switching state to:", state)
                     end
                 end
+            end
+        end
+        if state == "locatetarget" then
+            local sortedBounties = getSortedBounties()
+            local highestBountyPlayer = sortedBounties[1].Username
+            targetPlayer = Players:FindFirstChild(highestBountyPlayer)
+            if targetVehicle.PrimaryPart.Position.Y < cruisealt then
+                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + Vector3.new(0, carflyspeed * dt, 0))
+            else
+                state = "targetapproach"
+            end
+        end
+        if state == "targetapproach" then
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
+                targetPosition = Vector3.new(targetPosition.X, cruisealt, targetPosition.Z)
+                local direction = (targetPosition - character.HumanoidRootPart.Position).Unit
+                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + direction * carflyspeed * dt)
+            else
+                print("Target player not found or does not have a character.")
             end
         end
     end
