@@ -115,7 +115,7 @@ localPlayer.CharacterAdded:Connect(function(newCharacter)
 end)
 
 for _,v in pairs(workspace:GetDescendants()) do
-    if string.find(v.Name, "door") then
+    if string.find(v.Name:lower(), "door") then
         v:Destroy()
     end
 end
