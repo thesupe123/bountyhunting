@@ -188,7 +188,7 @@ runService.RenderStepped:Connect(function(dt)
             raycastParams.FilterDescendantsInstances = {character}
             raycastParams.FilterType = Enum.RaycastFilterType.Exclude
             raycastParams.IgnoreWater = true
-            local raycastDistance = 20
+            local raycastDistance = 100
             local direction = Vector3.new(0, 1, 0) * raycastDistance
             local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
             if result then
@@ -241,7 +241,7 @@ runService.RenderStepped:Connect(function(dt)
             end
             if closestVehicle ~= nil then
                 targetVehicle = closestVehicle
-                state = "vehicleenter"
+                state = "vehicleapproach"
                 print("Found vehicle:", targetVehicle.Name, "at distance:", closestDistance)
             else
                 state = "vehiclespawn"
@@ -252,8 +252,12 @@ runService.RenderStepped:Connect(function(dt)
             spawnVehicle("Camaro")
             state = "locatetarget"
         end
+        if state == "vehicleapproach" then
+            print("State: vehicleapproach, Target Vehicle:", targetVehicle.Name)
+            state = "vehicleenter"
+            path = generateWaypoints(character.HumanoidRootPart.Position, targetVehicle.Seat.Position, "vehicleapproach")
+        end
         if state == "vehicleenter" then
-            path = generateWaypoints(character.HumanoidRootPart.Position, targetVehicle.Seat.Position, "vehicleenter")
             if #path > 0 then
                 local nextWaypoint = path[1]
                 local direction = (nextWaypoint.Position - character.HumanoidRootPart.Position).Unit
