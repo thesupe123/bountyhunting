@@ -238,7 +238,7 @@ runService.RenderStepped:Connect(function(dt)
                     end
                 end
             end
-            if targetVehicle then
+            if closestVehicle ~= nil then
                 targetVehicle = closestVehicle
                 state = "vehicleenter"
             else
