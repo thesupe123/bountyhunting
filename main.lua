@@ -5,6 +5,8 @@ game doesnt care about how fast you go vertically down so you can just cframe to
 
 ]]
 
+local state = "start"
+
 local teleportService = game:GetService("TeleportService")
 local Players = game:GetService("Players")
 local httpService = game:GetService("HttpService")
@@ -107,6 +109,7 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		return path:GetWaypoints()
 	else
 		warn("Pathfinding failed: " .. tostring(errorMessage))
+        state = "start"
 		return {}
 	end
 end
@@ -144,7 +147,6 @@ end
 local localPlayer = Players.LocalPlayer
 local character = localPlayer.Character
 
-local state = "start"
 local path = {}
 
 local alive = true
@@ -152,6 +154,8 @@ local alive = true
 if localPlayer.TeamValue.Value ~= "Police" then
     firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police.Activated)
 end
+
+task.wait(5)
 
 character.Humanoid.Died:Connect(function()
     alive = false
