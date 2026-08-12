@@ -56,7 +56,7 @@ local function getSortedBounties()
     for _, playerFrame in pairs(wanted:GetChildren()) do
         local bountyTextObject = playerFrame:FindFirstChild("BountyText")
         -- Change "DisplayName" to whatever the actual text label for the name is called in the frame
-        local displayNameObject = playerFrame:FindFirstChild("DisplayName") 
+        local displayNameObject = playerFrame:FindFirstChild("NameText") 
         
         if bountyTextObject and displayNameObject then
             -- 1. Calculate the Bounty
