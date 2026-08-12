@@ -146,7 +146,7 @@ local function silentAim(state, part)
 end
 
 local function isPlayerBelowSomething(player, maxDistance)
-    maxDistance = maxDistance or 20
+    maxDistance = maxDistance or 70
 
     local character = player.Character
     if not character then return false end
