@@ -206,15 +206,20 @@ runService.RenderStepped:Connect(function(dt)
           end
         end
         if state == "leaving" then
-            if #path > 0 then
+           if #path > 0 then
                 local nextWaypoint = path[1]
                 local direction = (nextWaypoint.Position - character.HumanoidRootPart.Position).Unit
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * walkspeed * dt)
+                
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
                     table.remove(path, 1)
+                    
+                    -- Check if we just cleared the final waypoint
+                    if #path == 0 then
+                        state = "vehiclefind"
+                        print("Path completed! Switching state to:", state)
+                    end
                 end
-            else
-                state = "vehiclefind"
             end
         end
         if state == "vehiclefind" then
