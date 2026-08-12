@@ -419,11 +419,12 @@ runService.RenderStepped:Connect(function(dt)
                     targetPlayer = Players:FindFirstChild(topBounty.Username)
                     if targetPlayer then
                         print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
-                        state = "targetapproach"
                         if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
                             if targetVehicle.PrimaryPart.Position.Y < cruisealt then
                                 targetVehicle.PrimaryPart.CFrame = CFrame.new(Vector3.new(0,1,0)*carflyspeed*dt)
                             end
+                        else
+                            state = "targetapproach"
                         end
                     else
                         print("Target player not found in the game.")
