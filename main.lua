@@ -165,10 +165,20 @@ localPlayer.CharacterAdded:Connect(function(newCharacter)
     state = "start"
 end)
 
+local function spawnVehicle(VehicleName)
+    local event = replicatedStorage:WaitForChild("GarageSpawnVehicle")
+    event:FireServer(
+        "Chassis",
+        VehicleName
+    )
+end
 
 local walkspeed = 30
 local flyspeed = 120
+local cruisealt = 500
 
+local targetPlayer = nil
+local targetVehicle = nil
 runService.RenderStepped:Connect(function(dt)
     if alive then
         if state == "start" then
@@ -194,6 +204,8 @@ runService.RenderStepped:Connect(function(dt)
                 print("closest spawn: ", closestSpawn)
                 state = "leaving"
                 path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn)
+            else
+                state = "vehiclefind"
           end
         end
         if state == "leaving" then
@@ -204,7 +216,33 @@ runService.RenderStepped:Connect(function(dt)
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
                     table.remove(path, 1)
                 end
+            else
+                state = "vehiclefind"
             end
+        end
+        if state == "vehiclefind" then
+            local vehicles = workspace:WaitForChild("Vehicles"):GetChildren()
+            local closestVehicle = nil
+            local closestDistance = math.huge
+            local maxDistance = 200
+            for _,vehicle in pairs(vehicles) do
+                if vehicle.Name == "Jeep" or vehicle.Name == "Camaro" then
+                    local distance = (vehicle.PrimaryPart.Position - character.HumanoidRootPart.Position).Magnitude
+                    if distance < closestDistance and distance <= maxDistance then
+                        closestDistance = distance
+                        closestVehicle = vehicle
+                    end
+                end
+            end
+            if targetVehicle then
+                targetVehicle = closestVehicle
+                 state == "vehicleenter"
+            else
+                state = "vehiclespawn"
+            end
+        end
+        if state == "vehiclespawn" then
+            spawnVehicle("Camaro")
         end
     end
 end)
