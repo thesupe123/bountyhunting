@@ -203,6 +203,7 @@ runService.RenderStepped:Connect(function(dt)
                     end
                 end
                 state = "leaving"
+                markDoorsAsPassable()
                 path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn, "start")
             else
                 print("not under something")
