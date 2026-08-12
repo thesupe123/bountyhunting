@@ -264,7 +264,7 @@ local function spawnVehicle(VehicleName)
     event:FireServer("Chassis",VehicleName)
 end
 
-local walkspeed = 30
+local walkspeed = 40
 local flyspeed = 120
 local carflyspeed = 300
 local cruisealt = 500
@@ -337,6 +337,7 @@ runService.RenderStepped:Connect(function(dt)
         if state == "vehiclespawn" then
             spawnVehicle("Camaro")
             --find closest vehicle and set it to targetVehicle
+            task.wait(0.2)
             local vehicles = workspace:WaitForChild("Vehicles"):GetChildren()
             local closestVehicle = nil
             local closestDistance = math.huge
