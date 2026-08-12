@@ -145,6 +145,27 @@ local function silentAim(state, part)
     end
 end
 
+local function isPlayerBelowSomething(player, maxDistance)
+    maxDistance = maxDistance or 20
+
+    local character = player.Character
+    if not character then return false end
+
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    if not rootPart then return false end
+
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+    raycastParams.FilterDescendantsInstances = {character}
+
+    local origin = rootPart.Position
+    local direction = Vector3.new(0, maxDistance, 0)
+
+    local result = workspace:Raycast(origin, direction, raycastParams)
+
+    return result ~= nil
+end
+
 local localPlayer = Players.LocalPlayer
 local character = localPlayer.Character
 
@@ -183,16 +204,8 @@ local targetVehicle = nil
 runService.RenderStepped:Connect(function(dt)
     if alive then
         if state == "start" then
-            task.wait(1)
-            local raycastParams = RaycastParams.new()
-            -- Ignore the player's own character so it doesn't hit itself
-            raycastParams.FilterDescendantsInstances = {character}
-            raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-            raycastParams.IgnoreWater = true
-            local raycastDistance = 100
-            local direction = Vector3.new(0, 1, 0) * raycastDistance
-            local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
-            if result then
+            local below = isPlayerBelowSomething(localPlayer, 20)
+            if below then
                 print("under something")
                 local closestSpawn = nil
                 local closestDistance = math.huge
