@@ -277,7 +277,7 @@ textlabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 textlabel.BackgroundTransparency = 0.5
 textlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 textlabel.TextSize = 18
-textLabel.Font = Enum.Font.SourceSansBold
+textlabel.Font = Enum.Font.SourceSansBold
 textlabel.Text = "Bounty Hunter Active"
 textlabel.Parent = screenGui
 
