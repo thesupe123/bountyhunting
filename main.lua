@@ -141,7 +141,7 @@ local alive = true
 local walkspeed = 30
 local flyspeed = 120
 
-runservice.RenderStepped:Connect(function(dt)
+runService.RenderStepped:Connect(function(dt)
     if alive then
         if state == "start" then
              local raycastParams = RaycastParams.new()
