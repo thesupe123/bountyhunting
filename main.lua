@@ -167,10 +167,7 @@ end)
 
 local function spawnVehicle(VehicleName)
     local event = replicatedStorage:WaitForChild("GarageSpawnVehicle")
-    event:FireServer(
-        "Chassis",
-        VehicleName
-    )
+    event:FireServer("Chassis",VehicleName)
 end
 
 local walkspeed = 30
@@ -236,7 +233,7 @@ runService.RenderStepped:Connect(function(dt)
             end
             if targetVehicle then
                 targetVehicle = closestVehicle
-                 state == "vehicleenter"
+                state = "vehicleenter"
             else
                 state = "vehiclespawn"
             end
