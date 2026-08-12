@@ -186,7 +186,7 @@ runService.RenderStepped:Connect(function(dt)
             raycastParams.FilterDescendantsInstances = {character}
             raycastParams.FilterType = Enum.RaycastFilterType.Exclude
             raycastParams.IgnoreWater = true
-            local raycastDistance = 50
+            local raycastDistance = 100
             local direction = Vector3.new(0, 1, 0) * raycastDistance
             local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
             if result then
