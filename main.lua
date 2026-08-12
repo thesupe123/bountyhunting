@@ -95,7 +95,7 @@ end
 
 markDoorsAsPassable()
 
-local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
+local function generateWaypoints(origin: Vector3, endPosition: Vector3, returnstate: string): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
 		AgentRadius = 2,
 		AgentHeight = 5,
@@ -110,6 +110,7 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		return path:GetWaypoints()
 	else
 		warn("Pathfinding failed: " .. tostring(errorMessage))
+        state = returnstate
 		return {}
 	end
 end
@@ -201,7 +202,7 @@ runService.RenderStepped:Connect(function(dt)
                     end
                 end
                 state = "leaving"
-                path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn)
+                path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn, "start")
             else
                 print("not under something")
                 state = "vehiclefind"
@@ -251,7 +252,7 @@ runService.RenderStepped:Connect(function(dt)
             state = "locatetarget"
         end
         if state == "vehicleenter" then
-            path = generateWaypoints(character.HumanoidRootPart.Position, targetVehicle.Seat.Position)
+            path = generateWaypoints(character.HumanoidRootPart.Position, targetVehicle.Seat.Position, "vehicleenter")
             if #path > 0 then
                 local nextWaypoint = path[1]
                 local direction = (nextWaypoint.Position - character.HumanoidRootPart.Position).Unit
