@@ -183,6 +183,7 @@ local targetVehicle = nil
 runService.RenderStepped:Connect(function(dt)
     if alive then
         if state == "start" then
+            task.wait(1)
             local raycastParams = RaycastParams.new()
             -- Ignore the player's own character so it doesn't hit itself
             raycastParams.FilterDescendantsInstances = {character}
@@ -190,7 +191,6 @@ runService.RenderStepped:Connect(function(dt)
             raycastParams.IgnoreWater = true
             local raycastDistance = 100
             local direction = Vector3.new(0, 1, 0) * raycastDistance
-            task.wait(1)
             local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
             if result then
                 print("under something")
