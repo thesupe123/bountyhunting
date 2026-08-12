@@ -278,6 +278,7 @@ local function vehicleState(vehicle)
         end
     end
 end
+
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BountyHunterGUI"
 screenGui.IgnoreGuiInset = true
@@ -345,7 +346,7 @@ runService.RenderStepped:Connect(function(dt)
                     end
                 end
             end
-        end
+        end 
         if state == "vehiclefind" then
             local vehicles = workspace:WaitForChild("Vehicles"):GetChildren()
             local closestVehicle = nil
