@@ -141,7 +141,7 @@ localPlayer.CharacterAdded:Connect(function(newCharacter)
 end)
 
 
-local walkspeed = 30
+local walkspeed = 16
 local flyspeed = 120
 
 runService.RenderStepped:Connect(function(dt)
@@ -175,7 +175,7 @@ runService.RenderStepped:Connect(function(dt)
             if #path > 0 then
                 local nextWaypoint = path[1]
                 local direction = (nextWaypoint.Position - character.HumanoidRootPart.Position).Unit
-                character.HumanoidRootPart.AssemblyLinearVelocity = direction * walkspeed
+                character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * walkspeed * dt)
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
                     table.remove(path, 1)
                 end
