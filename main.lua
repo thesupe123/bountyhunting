@@ -264,13 +264,15 @@ local function spawnVehicle(VehicleName)
     event:FireServer("Chassis",VehicleName)
 end
 
-local walkspeed = 40
+local walkspeed = 50
 local flyspeed = 120
 local carflyspeed = 300
 local cruisealt = 500
 
 local targetPlayer = nil
 local targetVehicle = nil
+
+local vehicleEntered = false
 
 runService.RenderStepped:Connect(function(dt)
     if alive then
@@ -337,7 +339,6 @@ runService.RenderStepped:Connect(function(dt)
         if state == "vehiclespawn" then
             spawnVehicle("Camaro")
             --find closest vehicle and set it to targetVehicle
-            task.wait(0.2)
             local vehicles = workspace:WaitForChild("Vehicles"):GetChildren()
             local closestVehicle = nil
             local closestDistance = math.huge
@@ -351,6 +352,7 @@ runService.RenderStepped:Connect(function(dt)
             end
             targetVehicle = closestVehicle
             print("Spawned vehicle:", targetVehicle.Name, "at distance:", closestDistance)
+            vehicleEntered = true
             state = "locatetarget"
         end
         if state == "vehicleapproach" then
@@ -378,19 +380,33 @@ runService.RenderStepped:Connect(function(dt)
                     if #path == 0 then
                         keytap(0x45) -- E key to enter vehicle
                         state = "locatetarget"
+                        vehicleEntered = true
                         print("Path completed! Switching state to:", state)
                     end
                 end
             end
         end
         if state == "locatetarget" then
-            local sortedBounties = getSortedBounties()
-            local highestBountyPlayer = sortedBounties[1].Username
-            targetPlayer = Players:FindFirstChild(highestBountyPlayer)
-            if targetVehicle.PrimaryPart.Position.Y < cruisealt then
-                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + Vector3.new(0, carflyspeed * dt, 0))
-            else
-                state = "targetapproach"
+            if vehicleEntered then
+                task.spawn(function()
+                    task.wait(1)
+                    vehicleEntered = false
+                end)
+            end
+          if vehicleEntered == false then
+                local bounties = getSortedBounties()
+                if #bounties > 0 then
+                    local topBounty = bounties[1]
+                    targetPlayer = Players:FindFirstChild(topBounty.Username)
+                    if targetPlayer then
+                        print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
+                        state = "targetapproach"
+                    else
+                        print("Target player not found in the game.")
+                    end
+                else
+                    print("No players with bounties found.")
+                end
             end
         end
         if state == "targetapproach" then
