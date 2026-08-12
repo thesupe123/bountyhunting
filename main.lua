@@ -264,6 +264,20 @@ local function spawnVehicle(VehicleName)
     event:FireServer("Chassis",VehicleName)
 end
 
+local function vehicleState(vehicle)
+    for i,v in pairs(vehicle:GetChildren()) do
+        if v:IsA("Folder") then
+            local split = string.split(v.Name, "_") 
+            if split 
+                if split[1] == "VehicleState" then
+                    return split[2]
+                else
+                    return nil
+                end
+            end
+        end
+    end
+end
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BountyHunterGUI"
 screenGui.IgnoreGuiInset = true
@@ -340,7 +354,8 @@ runService.RenderStepped:Connect(function(dt)
             for _,vehicle in pairs(vehicles) do
                 if vehicle.Name == "Jeep" or vehicle.Name == "Camaro" then
                     local distance = (vehicle.PrimaryPart.Position - character.HumanoidRootPart.Position).Magnitude
-                    if distance < closestDistance and distance <= maxDistance then
+                    local occupied = vehicleState(vehicle)
+                    if distance < closestDistance and distance <= maxDistance and occupied == nil then
                         closestDistance = distance
                         closestVehicle = vehicle
                     end
@@ -362,14 +377,11 @@ runService.RenderStepped:Connect(function(dt)
             local closestVehicle = nil
             local closestDistance = math.huge
             local maxDistance = 20
-            for _,vehicle in pairs(vehicles) do
-                local distance = (vehicle.PrimaryPart.Position - character.HumanoidRootPart.Position).Magnitude
-                if distance < closestDistance and distance <= maxDistance then
-                    closestDistance = distance
-                    closestVehicle = vehicle
+            for i,v in pairs(workspace.Vehicles:GetChildren()) do
+                if v:FindFirstChild("_VehicleState_"..localPlayer.Name) then
+                    targetVehicle = v
                 end
             end
-            targetVehicle = closestVehicle
             print("Spawned vehicle:", targetVehicle.Name, "at distance:", closestDistance)
             vehicleEntered = true
             state = "locatetarget"
