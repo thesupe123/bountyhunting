@@ -95,6 +95,8 @@ end
 
 markDoorsAsPassable()
 
+local Debris = game:GetService("Debris")
+
 local function generateWaypoints(origin: Vector3, endPosition: Vector3, returnstate: string): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
 		AgentRadius = 4,
@@ -107,7 +109,25 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3, returnst
 	end)
 
 	if success and path.Status == Enum.PathStatus.Success then
-		return path:GetWaypoints()
+		local waypoints = path:GetWaypoints()
+
+		for _, waypoint in ipairs(waypoints) do
+			local block = Instance.new("Part")
+			block.Size = Vector3.new(1, 1, 1)
+			block.Position = waypoint.Position
+			block.Anchored = true
+			block.CanCollide = false
+			block.Shape = Enum.PartType.Block
+			block.Material = Enum.Material.Neon
+			block.Color = if waypoint.Action == Enum.PathWaypointAction.Jump
+				then Color3.fromRGB(255, 170, 0)
+				else Color3.fromRGB(0, 170, 255)
+			block.Parent = workspace
+
+			Debris:AddItem(block, 60)
+		end
+
+		return waypoints
 	else
 		warn("Pathfinding failed: " .. tostring(errorMessage))
         state = returnstate
@@ -265,6 +285,7 @@ runService.RenderStepped:Connect(function(dt)
             end
         end
         if state == "vehiclespawn" then
+            task.wait(0.5)
             spawnVehicle("Camaro")
             state = "locatetarget"
         end
@@ -283,8 +304,8 @@ runService.RenderStepped:Connect(function(dt)
                     print("Reached waypoint:", nextWaypoint.Position)
                     table.remove(path, 1)
                     
-                    keytap(0x45) -- E key to enter vehicle
                     if #path == 0 then
+                        keytap(0x45) -- E key to enter vehicle
                         state = "locatetarget"
                         print("Path completed! Switching state to:", state)
                     end
