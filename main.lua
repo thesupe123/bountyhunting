@@ -249,6 +249,23 @@ runService.RenderStepped:Connect(function(dt)
             spawnVehicle("Camaro")
             state = "locatetarget"
         end
+        if state == "vehicleenter" then
+            path = generateWaypoints(character.HumanoidRootPart.Position, targetVehicle.Seat.Position)
+            if #path > 0 then
+                local nextWaypoint = path[1]
+                local direction = (nextWaypoint.Position - character.HumanoidRootPart.Position).Unit
+                character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * walkspeed * dt)
+                
+                if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
+                    table.remove(path, 1)
+                    
+                    keytap(0x45) -- E key to enter vehicle
+                    if #path == 0 then
+                        state = "locatetarget"
+                        print("Path completed! Switching state to:", state)
+                    end
+                end
+        end
     end
 end)
 
