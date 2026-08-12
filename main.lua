@@ -198,7 +198,6 @@ if localPlayer.TeamValue.Value ~= "Police" then
     firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police.Activated)
 end
 
-task.wait(5)
 
 character.Humanoid.Died:Connect(function()
     alive = false
@@ -286,7 +285,6 @@ runService.RenderStepped:Connect(function(dt)
             end
         end
         if state == "vehiclespawn" then
-            task.wait(0.5)
             spawnVehicle("Camaro")
             state = "locatetarget"
         end
