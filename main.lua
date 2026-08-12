@@ -224,9 +224,12 @@ local targetVehicle = nil
 runService.RenderStepped:Connect(function(dt)
     if alive then
         if state == "start" then
+            print("under something")
+            local closestSpawn = nil
+            local closestDistance = math.huge
             for _, spawn in ipairs(spawnTP) do
-                local distance = (spawn - character.HumanoidRootPart.Position).Magnitude
-                 if distance < closestDistance then
+            local distance = (spawn - character.HumanoidRootPart.Position).Magnitude
+                if distance < closestDistance then
                     closestDistance = distance
                     closestSpawn = spawn
                 end
