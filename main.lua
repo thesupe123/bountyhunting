@@ -183,6 +183,7 @@ runService.RenderStepped:Connect(function(dt)
             local direction = Vector3.new(0, 1, 0) * raycastDistance
             local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
             if result then
+                print("Under roof")
                 local closestSpawn = nil
                 local closestDistance = math.huge
                 for _, spawn in ipairs(spawnTP) do
@@ -193,7 +194,7 @@ runService.RenderStepped:Connect(function(dt)
                     end
                 end
                 state = "leaving"
-                path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn)
+                path = generateWaypointsWithMarkers(character.HumanoidRootPart.Position, closestSpawn)
           end
         end
         if state == "leaving" then
