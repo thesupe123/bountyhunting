@@ -22,7 +22,8 @@ local spawnTP = {
     Vector3.new(-1262, 18, -1542),
     Vector3.new(1815, 25, -884),
     Vector3.new(714, 44, 1062),
-    Vector3.new(1409, 23, -3914)
+    Vector3.new(1409, 23, -3914),
+    Vector3.new(1805,28, -802)
 }
 
 local function getBounty()
