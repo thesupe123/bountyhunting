@@ -241,8 +241,10 @@ runService.RenderStepped:Connect(function(dt)
             if closestVehicle ~= nil then
                 targetVehicle = closestVehicle
                 state = "vehicleenter"
+                print("Found vehicle:", targetVehicle.Name, "at distance:", closestDistance)
             else
                 state = "vehiclespawn"
+                print("No vehicle found within range. Switching state to:", state)
             end
         end
         if state == "vehiclespawn" then
