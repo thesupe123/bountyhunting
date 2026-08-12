@@ -269,8 +269,8 @@ local function vehicleState(vehicle)
         if v:IsA("Folder") then
             local split = string.split(v.Name, "_") 
             if split 
-                if split[1] == "VehicleState" then
-                    return split[2]
+                if split[2] == "VehicleState" then
+                    return split[3]
                 else
                     return nil
                 end
