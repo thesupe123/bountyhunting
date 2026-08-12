@@ -108,7 +108,7 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 end
 
 ws.OnMessage:Connect(function(message)
-    local ok, data = pcall(HttpService.JSONDecode, httpService, message)
+    local ok, data = pcall(httpService.JSONDecode, httpService, message)
     if not ok then
         warn("Failed to decode JSON message: " .. data)
         return
