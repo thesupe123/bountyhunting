@@ -116,12 +116,15 @@ ws.OnMessage:Connect(function(message)
     jobid = data.job_id
 end)
 
-firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police)
-
 local localPlayer = Players.LocalPlayer
 local character = localPlayer.Character
 local state = "start"
 local path = {}
+
+if localPlayer.Team ~= "Police" then
+    firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police)
+end
+
 character.Humanoid.Died:Connect(function()
     alive = false
     state = "start"
