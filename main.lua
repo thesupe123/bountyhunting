@@ -252,6 +252,11 @@ runService.RenderStepped:Connect(function(dt)
                 
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
                     print("Reached waypoint:", nextWaypoint.Position)
+
+                    if nextWaypoint.Action == Enum.PathWaypointAction.Jump then
+                        character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                    end
+
                     table.remove(path, 1)
                     -- Check if we just cleared the final waypoint
                     if #path == 0 then
@@ -301,6 +306,12 @@ runService.RenderStepped:Connect(function(dt)
                 
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
                     print("Reached waypoint:", nextWaypoint.Position)
+
+                    if nextWaypoint.Action == Enum.PathWaypointAction.Jump then
+                        character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                    end
+
+
                     table.remove(path, 1)
                     
                     if #path == 0 then
