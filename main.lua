@@ -79,7 +79,7 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		part.Parent = workspace
 		
 		-- Destroy the marker after 5 seconds automatically
-		task.delay(50, function()
+		task.delay(5, function()
 			if part and part.Parent then
 				part:Destroy()
 			end
@@ -98,19 +98,18 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		AgentCanJump = true,
 	})
 
-	-- Track modified parts so we can restore their collision states
-	local modifiedParts = {}
+	-- Track dynamically added pathfinding modifiers for cleanup
+	local temporaryModifiers = {}
 
-	-- Temporarily disable collision for parts inside any model containing "Door"
+	-- Find models containing "Door" and give them a PathfindingModifier to force-pass through them
 	for _, descendant in ipairs(workspace:GetDescendants()) do
-		if descendant:IsA("BasePart") and descendant.CanCollide then
-			local model = descendant:FindFirstAncestorOfClass("Model")
-			if model and string.find(model.Name:lower(), "door") then
-				table.insert(modifiedParts, {
-					part = descendant, 
-					originalCanCollide = descendant.CanCollide
-				})
-				descendant.CanCollide = false
+		if descendant:IsA("Model") and string.find(descendant.Name:lower(), "door") then
+			-- Check if it already has a modifier to avoid duplicates
+			if not descendant:FindFirstChildOfClass("PathfindingModifier") then
+				local modifier = Instance.new("PathfindingModifier")
+				modifier.PassThrough = true
+				modifier.Parent = descendant
+				table.insert(temporaryModifiers, modifier)
 			end
 		end
 	end
@@ -120,9 +119,9 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		path:ComputeAsync(origin, endPosition)
 	end)
 
-	-- Restore the original collision states immediately
-	for _, item in ipairs(modifiedParts) do
-		item.part.CanCollide = item.originalCanCollide
+	-- Clean up the temporary pathfinding modifiers
+	for _, modifier in ipairs(temporaryModifiers) do
+		modifier:Destroy()
 	end
 
 	-- Return waypoints if successful, or an empty table if it failed
@@ -134,7 +133,7 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		
 		return path:GetWaypoints()
 	else
-		warn("Pathfinding failed: " .. tostring(errorMessage))
+		warn("Pathfinding failed: " + tostring(errorMessage))
 		return {}
 	end
 end
