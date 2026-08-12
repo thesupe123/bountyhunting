@@ -65,6 +65,32 @@ local function joinServer(jobid)
 end
 
 
+local function isPartOfDoor(part: BasePart): boolean
+	local current = part.Parent
+	while current do
+		if current:IsA("Model") and string.find(string.lower(current.Name), "door") then
+			return true
+		end
+		current = current.Parent
+	end
+	return false
+end
+
+-- Run this once (e.g. at server startup) to mark all door parts as pathfinding-passable
+local function markDoorsAsPassable()
+	for _, part in ipairs(workspace:GetDescendants()) do
+		if part:IsA("BasePart") and isPartOfDoor(part) then
+			if not part:FindFirstChildOfClass("PathfindingModifier") then
+				local modifier = Instance.new("PathfindingModifier")
+				modifier.PassThrough = true
+				modifier.Parent = part
+			end
+		end
+	end
+end
+
+markDoorsAsPassable()
+
 local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
 		AgentRadius = 2,
@@ -114,11 +140,6 @@ localPlayer.CharacterAdded:Connect(function(newCharacter)
     state = "start"
 end)
 
-for _,v in pairs(workspace:GetDescendants()) do
-    if string.find(v.Name:lower(), "door") then
-        v:Destroy()
-    end
-end
 
 local walkspeed = 16
 local flyspeed = 120
