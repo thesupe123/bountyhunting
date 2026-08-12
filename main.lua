@@ -296,6 +296,7 @@ runService.RenderStepped:Connect(function(dt)
         if state == "vehicleapproach" then
             print("State: vehicleapproach, Target Vehicle:", targetVehicle.Name)
             state = "vehicleenter"
+            markDoorsAsPassable()
             path = generateWaypoints(character.HumanoidRootPart.Position, targetVehicle.Seat.Position, "vehicleapproach")
         end
         if state == "vehicleenter" then
