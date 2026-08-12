@@ -64,13 +64,8 @@ local function joinServer(jobid)
     return success
 end
 
-local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
-	local path = PathfindingService:CreatePath({
-		AgentRadius = 2,
-		AgentHeight = 5,
-		AgentCanJump = true,
-	})
 
+local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
 	-- Helper function to spawn a temporary marker part
 	local function createMarker(position: Vector3, color: Color3)
 		local part = Instance.new("Part")
@@ -84,7 +79,7 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		part.Parent = workspace
 		
 		-- Destroy the marker after 5 seconds automatically
-		task.delay(5, function()
+		task.delay(50, function()
 			if part and part.Parent then
 				part:Destroy()
 			end
@@ -93,9 +88,15 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		return part
 	end
 
-	-- Place the start marker (Green) and end marker (Red)
+	-- Place the start marker (Green) and end marker (Red) immediately so they always show
 	createMarker(origin, Color3.fromRGB(0, 255, 0))
 	createMarker(endPosition, Color3.fromRGB(255, 0, 0))
+
+	local path = PathfindingService:CreatePath({
+		AgentRadius = 2,
+		AgentHeight = 5,
+		AgentCanJump = true,
+	})
 
 	-- Track modified parts so we can restore their collision states
 	local modifiedParts = {}
@@ -126,9 +127,9 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 
 	-- Return waypoints if successful, or an empty table if it failed
 	if success and path.Status == Enum.PathStatus.Success then
-		-- Optional: Place small markers along the waypoints as well
+		-- Place small yellow markers along the waypoints if successful
 		for _, waypoint in ipairs(path:GetWaypoints()) do
-			createMarker(waypoint.Position, Color3.fromRGB(255, 255, 0)) -- Yellow for path
+			createMarker(waypoint.Position, Color3.fromRGB(255, 255, 0))
 		end
 		
 		return path:GetWaypoints()
@@ -194,6 +195,7 @@ runService.RenderStepped:Connect(function(dt)
                         closestSpawn = spawn
                     end
                 end
+                print("closest spawn: ", closestSpawn)
                 state = "leaving"
                 path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn)
           end
@@ -202,7 +204,7 @@ runService.RenderStepped:Connect(function(dt)
             if #path > 0 then
                 local nextWaypoint = path[1]
                 local direction = (nextWaypoint.Position - character.HumanoidRootPart.Position).Unit
-                character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * flyspeed * dt)
+                character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * walkspeed * dt)
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
                     table.remove(path, 1)
                 end
