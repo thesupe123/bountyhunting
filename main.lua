@@ -68,6 +68,7 @@ local function joinServer(jobid)
 end
 
 
+-- Walk up the ancestry to see if this part belongs to a model with "door" in its name
 local function isPartOfDoor(part: BasePart): boolean
 	local current = part.Parent
 	while current do
@@ -96,9 +97,9 @@ markDoorsAsPassable()
 
 local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
-		AgentRadius = 3,
+		AgentRadius = 2,
 		AgentHeight = 5,
-		AgentCanJump = false,
+		AgentCanJump = true,
 	})
 
 	local success, errorMessage = pcall(function()
@@ -109,7 +110,6 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 		return path:GetWaypoints()
 	else
 		warn("Pathfinding failed: " .. tostring(errorMessage))
-        state = "start"
 		return {}
 	end
 end
