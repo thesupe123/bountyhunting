@@ -152,6 +152,8 @@ local character = localPlayer.Character
 local state = "start"
 local path = {}
 
+local alive = true
+
 if localPlayer.TeamValue.Value ~= "Police" then
     firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police)
 end
@@ -166,7 +168,6 @@ localPlayer.CharacterAdded:Connect(function(newCharacter)
     state = "start"
 end)
 
-local alive = true
 
 local walkspeed = 30
 local flyspeed = 120
