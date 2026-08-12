@@ -247,6 +247,7 @@ runService.RenderStepped:Connect(function(dt)
         end
         if state == "vehiclespawn" then
             spawnVehicle("Camaro")
+            state = "locatetarget"
         end
     end
 end)
