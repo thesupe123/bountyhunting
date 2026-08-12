@@ -177,7 +177,6 @@ runService.RenderStepped:Connect(function(dt)
             end
         end
     end
-    print(state)
 end)
 
 
