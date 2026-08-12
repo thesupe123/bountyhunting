@@ -10,6 +10,7 @@ local Players = game:GetService("Players")
 local httpService = game:GetService("HttpService")
 local runService = game:GetService("RunService")
 local PathfindingService = game:GetService("PathfindingService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
 
 local ws = WebSocket.connect("ws://localhost:8766")
 local jobid = game.JobId
@@ -93,9 +94,9 @@ markDoorsAsPassable()
 
 local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
-		AgentRadius = 2,
+		AgentRadius = 4,
 		AgentHeight = 5,
-		AgentCanJump = true,
+		AgentCanJump = false,
 	})
 
 	local success, errorMessage = pcall(function()
@@ -119,8 +120,32 @@ ws.OnMessage:Connect(function(message)
     jobid = data.job_id
 end)
 
+local function silentAim(state, part)
+    silentAimEnabled = state
+    local raycastModule = require(replicatedStorage.Module.RayCast)
+
+    if silentAimEnabled then
+        currentTarget = part
+
+        getgenv().old = getgenv() or raycastModule.RayIgnoreNonCollideWithIgnoreList
+
+        raycastModule.RayIgnoreNonCollideWithIgnoreList = function(...)
+            local arg = {getgenv().old(...)}
+            local scriptname = tostring(getfenv(2).script)
+            if (scriptName == "BulletEmitter" or scriptName == "Taser") and currentTarget then
+                arg[1] = part
+                arg[2] = part.Position
+            end
+        end
+        return unpack(arg)
+    end
+end
+
 local localPlayer = Players.LocalPlayer
 local character = localPlayer.Character
+
+local pistolEvent = localPlayer.Folder.Pistol.InventoryEquipRemote -- fireserver(true)
+
 local state = "start"
 local path = {}
 
@@ -141,7 +166,7 @@ localPlayer.CharacterAdded:Connect(function(newCharacter)
 end)
 
 
-local walkspeed = 16
+local walkspeed = 30
 local flyspeed = 120
 
 runService.RenderStepped:Connect(function(dt)
