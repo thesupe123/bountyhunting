@@ -264,6 +264,24 @@ local function spawnVehicle(VehicleName)
     event:FireServer("Chassis",VehicleName)
 end
 
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BountyHunterGUI"
+screenGui.IgnoreGuiInset = true
+screenGui.ResetOnSpawn = false
+screenGui.Parent = game:GetService("CoreGui")
+
+local textlabel = Instance.new("TextLabel")
+textlabel.Size = UDim2.new(0, 300, 0, 40)
+textlabel.Position = UDim2.new(0.5, -150, 0, 5)
+textlabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+textlabel.BackgroundTransparency = 0.5
+textlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextSize = 18
+textLabel.Font = Enum.Font.SourceSansBold
+textlabel.Text = "Bounty Hunter Active"
+textlabel.Parent = screenGui
+
+
 local walkspeed = 50
 local flyspeed = 120
 local carflyspeed = 300
@@ -275,6 +293,7 @@ local targetVehicle = nil
 local vehicleEntered = false
 
 runService.RenderStepped:Connect(function(dt)
+    textlabel.Text = state
     if alive then
         if state == "start" then
             print("under something")
