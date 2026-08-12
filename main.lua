@@ -121,7 +121,7 @@ local character = localPlayer.Character
 local state = "start"
 local path = {}
 
-if localPlayer.Team ~= "Police" then
+if localPlayer.TeamValue.Value ~= "Police" then
     firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police)
 end
 
