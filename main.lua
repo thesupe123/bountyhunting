@@ -224,25 +224,16 @@ local targetVehicle = nil
 runService.RenderStepped:Connect(function(dt)
     if alive then
         if state == "start" then
-            local below = isPlayerBelowSomething(localPlayer, 20)
-            if below then
-                print("under something")
-                local closestSpawn = nil
-                local closestDistance = math.huge
-                for _, spawn in ipairs(spawnTP) do
-                    local distance = (spawn - character.HumanoidRootPart.Position).Magnitude
-                    if distance < closestDistance then
-                        closestDistance = distance
-                        closestSpawn = spawn
-                    end
+            for _, spawn in ipairs(spawnTP) do
+                local distance = (spawn - character.HumanoidRootPart.Position).Magnitude
+                 if distance < closestDistance then
+                    closestDistance = distance
+                    closestSpawn = spawn
                 end
-                state = "leaving"
-                markDoorsAsPassable()
-                path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn, "start")
-            else
-                print("not under something")
-                state = "vehiclefind"
             end
+            state = "leaving"
+            markDoorsAsPassable()
+            path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn, "start")
         end
         if state == "leaving" then
            if #path > 0 then
