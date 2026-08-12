@@ -181,7 +181,7 @@ local targetVehicle = nil
 runService.RenderStepped:Connect(function(dt)
     if alive then
         if state == "start" then
-             local raycastParams = RaycastParams.new()
+            local raycastParams = RaycastParams.new()
             -- Ignore the player's own character so it doesn't hit itself
             raycastParams.FilterDescendantsInstances = {character}
             raycastParams.FilterType = Enum.RaycastFilterType.Exclude
@@ -205,7 +205,7 @@ runService.RenderStepped:Connect(function(dt)
             else
                 print("not under something")
                 state = "vehiclefind"
-          end
+            end
         end
         if state == "leaving" then
            if #path > 0 then
@@ -215,7 +215,6 @@ runService.RenderStepped:Connect(function(dt)
                 
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
                     table.remove(path, 1)
-                    
                     -- Check if we just cleared the final waypoint
                     if #path == 0 then
                         state = "vehiclefind"
