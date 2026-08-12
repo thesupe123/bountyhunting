@@ -144,8 +144,6 @@ end
 local localPlayer = Players.LocalPlayer
 local character = localPlayer.Character
 
-local pistolEvent = localPlayer.Folder.Pistol.InventoryEquipRemote -- fireserver(true)
-
 local state = "start"
 local path = {}
 
