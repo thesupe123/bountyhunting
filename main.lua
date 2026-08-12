@@ -267,6 +267,7 @@ runService.RenderStepped:Connect(function(dt)
                         print("Path completed! Switching state to:", state)
                     end
                 end
+            end
         end
     end
 end)
