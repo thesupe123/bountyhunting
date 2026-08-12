@@ -231,6 +231,7 @@ runService.RenderStepped:Connect(function(dt)
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * walkspeed * dt)
                 
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
+                    print("Reached waypoint:", nextWaypoint.Position)
                     table.remove(path, 1)
                     -- Check if we just cleared the final waypoint
                     if #path == 0 then
@@ -279,6 +280,7 @@ runService.RenderStepped:Connect(function(dt)
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + direction * walkspeed * dt)
                 
                 if (character.HumanoidRootPart.Position - nextWaypoint.Position).Magnitude < 5 then
+                    print("Reached waypoint:", nextWaypoint.Position)
                     table.remove(path, 1)
                     
                     keytap(0x45) -- E key to enter vehicle
