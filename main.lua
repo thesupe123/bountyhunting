@@ -64,12 +64,38 @@ local function joinServer(jobid)
     return success
 end
 
-local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
+local function generateWaypointsWithMarkers(origin: Vector3, endPosition: Vector3): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
 		AgentRadius = 2,
 		AgentHeight = 5,
 		AgentCanJump = true,
 	})
+
+	-- Helper function to spawn a temporary marker part
+	local function createMarker(position: Vector3, color: Color3)
+		local part = Instance.new("Part")
+		part.Size = Vector3.new(1, 1, 1)
+		part.Position = position
+		part.Anchored = true
+		part.CanCollide = false
+		part.Material = Enum.Material.Neon
+		part.Color = color
+		part.Shape = Enum.PartType.Ball
+		part.Parent = workspace
+		
+		-- Destroy the marker after 5 seconds automatically
+		task.delay(5, function()
+			if part and part.Parent then
+				part:Destroy()
+			end
+		end)
+		
+		return part
+	end
+
+	-- Place the start marker (Green) and end marker (Red)
+	createMarker(origin, Color3.fromRGB(0, 255, 0))
+	createMarker(endPosition, Color3.fromRGB(255, 0, 0))
 
 	-- Track modified parts so we can restore their collision states
 	local modifiedParts = {}
@@ -100,6 +126,11 @@ local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWa
 
 	-- Return waypoints if successful, or an empty table if it failed
 	if success and path.Status == Enum.PathStatus.Success then
+		-- Optional: Place small markers along the waypoints as well
+		for _, waypoint in ipairs(path:GetWaypoints()) do
+			createMarker(waypoint.Position, Color3.fromRGB(255, 255, 0)) -- Yellow for path
+		end
+		
 		return path:GetWaypoints()
 	else
 		warn("Pathfinding failed: " .. tostring(errorMessage))
@@ -127,7 +158,6 @@ end
 
 character.Humanoid.Died:Connect(function()
     alive = false
-    state = "start"
 end)
 
 localPlayer.CharacterAdded:Connect(function(newCharacter)
