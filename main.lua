@@ -200,10 +200,10 @@ runService.RenderStepped:Connect(function(dt)
                         closestSpawn = spawn
                     end
                 end
-                print("closest spawn: ", closestSpawn)
                 state = "leaving"
                 path = generateWaypoints(character.HumanoidRootPart.Position, closestSpawn)
             else
+                print("not under something")
                 state = "vehiclefind"
           end
         end
