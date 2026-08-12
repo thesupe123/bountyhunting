@@ -155,7 +155,7 @@ local path = {}
 local alive = true
 
 if localPlayer.TeamValue.Value ~= "Police" then
-    firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police)
+    firesignal(Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("TeamSelectGui").TeamSelect.Frame.MiddleContainer.Container.Police.Activated)
 end
 
 character.Humanoid.Died:Connect(function()
