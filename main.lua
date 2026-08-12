@@ -97,7 +97,7 @@ markDoorsAsPassable()
 
 local function generateWaypoints(origin: Vector3, endPosition: Vector3, returnstate: string): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
-		AgentRadius = 2.5,
+		AgentRadius = 3,
 		AgentHeight = 5,
 		AgentCanJump = true,
 	})
@@ -190,6 +190,7 @@ runService.RenderStepped:Connect(function(dt)
             raycastParams.IgnoreWater = true
             local raycastDistance = 100
             local direction = Vector3.new(0, 1, 0) * raycastDistance
+            task.wait(1)
             local result = workspace:Raycast(character.HumanoidRootPart.Position, direction, raycastParams)
             if result then
                 print("under something")
