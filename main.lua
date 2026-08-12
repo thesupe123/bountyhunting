@@ -421,7 +421,7 @@ runService.RenderStepped:Connect(function(dt)
                         print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
                         if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
                             if targetVehicle.PrimaryPart.Position.Y < cruisealt then
-                                targetVehicle.PrimaryPart.CFrame = CFrame.new(Vector3.new(0,1,0)*carflyspeed*dt)
+                                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                             end
                         else
                             state = "targetapproach"
