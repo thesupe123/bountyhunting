@@ -66,71 +66,17 @@ end
 
 
 local function generateWaypoints(origin: Vector3, endPosition: Vector3): {PathWaypoint}
-	-- Helper function to spawn a temporary marker part
-	local function createMarker(position: Vector3, color: Color3)
-		local part = Instance.new("Part")
-		part.Size = Vector3.new(1, 1, 1)
-		part.Position = position
-		part.Anchored = true
-		part.CanCollide = false
-		part.Material = Enum.Material.Neon
-		part.Color = color
-		part.Shape = Enum.PartType.Ball
-		part.Parent = workspace
-		
-		-- Destroy the marker after 5 seconds automatically
-		task.delay(5, function()
-			if part and part.Parent then
-				part:Destroy()
-			end
-		end)
-		
-		return part
-	end
-
-	-- Place the start marker (Green) and end marker (Red) immediately so they always show
-	createMarker(origin, Color3.fromRGB(0, 255, 0))
-	createMarker(endPosition, Color3.fromRGB(255, 0, 0))
-
 	local path = PathfindingService:CreatePath({
 		AgentRadius = 2,
 		AgentHeight = 5,
 		AgentCanJump = true,
 	})
 
-	-- Track dynamically added pathfinding modifiers for cleanup
-	local temporaryModifiers = {}
-
-	-- Find models containing "Door" and give them a PathfindingModifier to force-pass through them
-	for _, descendant in ipairs(workspace:GetDescendants()) do
-		if descendant:IsA("Model") and string.find(descendant.Name:lower(), "door") then
-			-- Check if it already has a modifier to avoid duplicates
-			if not descendant:FindFirstChildOfClass("PathfindingModifier") then
-				local modifier = Instance.new("PathfindingModifier")
-				modifier.PassThrough = true
-				modifier.Parent = descendant
-				table.insert(temporaryModifiers, modifier)
-			end
-		end
-	end
-
-	-- Compute the path safely using pcall
 	local success, errorMessage = pcall(function()
 		path:ComputeAsync(origin, endPosition)
 	end)
 
-	-- Clean up the temporary pathfinding modifiers
-	for _, modifier in ipairs(temporaryModifiers) do
-		modifier:Destroy()
-	end
-
-	-- Return waypoints if successful, or an empty table if it failed
 	if success and path.Status == Enum.PathStatus.Success then
-		-- Place small yellow markers along the waypoints if successful
-		for _, waypoint in ipairs(path:GetWaypoints()) do
-			createMarker(waypoint.Position, Color3.fromRGB(255, 255, 0))
-		end
-		
 		return path:GetWaypoints()
 	else
 		warn("Pathfinding failed: " .. tostring(errorMessage))
@@ -168,8 +114,13 @@ localPlayer.CharacterAdded:Connect(function(newCharacter)
     state = "start"
 end)
 
+for _,v in pairs(workspace:GetDescendants()) do
+    if string.find(v.Name, "door") then
+        v:Destroy()
+    end
+end
 
-local walkspeed = 30
+local walkspeed = 16
 local flyspeed = 120
 
 runService.RenderStepped:Connect(function(dt)
