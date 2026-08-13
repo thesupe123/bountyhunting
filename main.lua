@@ -268,12 +268,10 @@ local function vehicleState(vehicle)
     for i,v in pairs(vehicle:GetChildren()) do
         if v:IsA("Folder") then
             local split = string.split(v.Name, "_") 
-            if split 
-                if split[2] == "VehicleState" then
-                    return split[3]
-                else
-                    return nil
-                end
+            if split[2] == "VehicleState" then
+                return split[3]
+            else
+                return nil
             end
         end
     end
@@ -315,7 +313,7 @@ runService.RenderStepped:Connect(function(dt)
             local closestSpawn = nil
             local closestDistance = math.huge
             for _, spawn in ipairs(spawnTP) do
-            local distance = (spawn - character.HumanoidRootPart.Position).Magnitude
+                local distance = (spawn - character.HumanoidRootPart.Position).Magnitude
                 if distance < closestDistance then
                     closestDistance = distance
                     closestSpawn = spawn
@@ -405,8 +403,6 @@ runService.RenderStepped:Connect(function(dt)
                     if nextWaypoint.Action == Enum.PathWaypointAction.Jump then
                         character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                     end
-
-
                     table.remove(path, 1)
                     
                     if #path == 0 then
