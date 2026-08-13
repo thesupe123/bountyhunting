@@ -450,7 +450,7 @@ runService.RenderStepped:Connect(function(dt)
                 targetPosition = Vector3.new(targetPosition.X, cruisealt, targetPosition.Z)
                 local direction = (targetPosition - character.HumanoidRootPart.Position).Unit
                 local fly = targetVehicle.PrimaryPart.Position + direction * carflyspeed * dt
-                fly.Y = cruisealt
+                fly = Vector3.new(fly.X, cruisealt, fly.Z)
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(fly)
             else
                -- print("Target player not found or does not have a character.")
