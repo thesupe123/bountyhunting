@@ -508,6 +508,7 @@ runService.RenderStepped:Connect(function(dt)
                         keytap(0x20)
                         state = "followplayer"
                         character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
+                        character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
                      end
                 end
             elseif climb == false then
