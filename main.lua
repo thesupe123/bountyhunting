@@ -468,7 +468,7 @@ runService.RenderStepped:Connect(function(dt)
                     targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                 else
                     climb = false
-                    carflyspeed = 400
+                    carflyspeed = 250
                     print("climb finished")
                 end
             end
