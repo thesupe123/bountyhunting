@@ -304,7 +304,7 @@ textlabel.Parent = screenGui
 
 local walkspeed = 50
 local flyspeed = 120
-local carflyspeed = 400
+local carflyspeed = 350
 local cruisealt = 500
 
 local targetPlayer = nil
@@ -452,10 +452,12 @@ runService.RenderStepped:Connect(function(dt)
         end
         if state == "targetapproach" then
             if climb then
+                carflyspeed = 300
                 if targetVehicle.PrimaryPart.Position.Y <= cruisealt then
                     targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                 else
                     climb = false
+                    carflyspeed = 400
                     print("climb finished")
                 end
             end
