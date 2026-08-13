@@ -18,7 +18,7 @@ local ws = WebSocket.connect("ws://localhost:8766")
 local jobid = game.JobId
 
 local spawnTP = {
-    Vector3.new(1725, 23 -4006),
+    Vector3.new(1725, 23, -4006),
     Vector3.new(-1262, 18, -1542),
     Vector3.new(1815, 25, -884),
     Vector3.new(714, 44, 1062),
