@@ -319,6 +319,7 @@ local vehicleEntered = false
 
 local searching = false
 local ignoreplayer = nil
+print("VERSION: 1")
 runService.PreSimulation:Connect(function(dt)
     textlabel.Text = state
     if alive then
@@ -486,7 +487,7 @@ runService.PreSimulation:Connect(function(dt)
                     targetVehicle.PrimaryPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
                 else
                     climb = false
-                    carflyspeed = 350
+                    carflyspeed = 250
                     print("climb finished")
                 end
             end
@@ -513,7 +514,7 @@ runService.PreSimulation:Connect(function(dt)
                         state = "followplayer"
                         character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
                         character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
-                        character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
+                --        character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
                      end
                 end
             elseif climb == false then
