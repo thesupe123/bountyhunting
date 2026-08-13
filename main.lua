@@ -312,6 +312,7 @@ local targetVehicle = nil
 
 local targetPlayerlastPos = Vector3.new(0,0,0)
 
+local carSpawned = false
 local climb = false
 
 local vehicleEntered = false
@@ -363,6 +364,9 @@ runService.RenderStepped:Connect(function(dt)
             local closestVehicle = nil
             local closestDistance = math.huge
             local maxDistance = 200
+            if carSpawned then
+                maxDistance = 50000
+            end
             for _,vehicle in pairs(vehicles) do
                 if vehicle.Name == "Jeep" or vehicle.Name == "Camaro" then
                     local distance = (vehicle.PrimaryPart.Position - character.HumanoidRootPart.Position).Magnitude
@@ -384,20 +388,29 @@ runService.RenderStepped:Connect(function(dt)
             end
         end
         if state == "vehiclespawn" then
-            spawnVehicle("Camaro")
-            --find closest vehicle and set it to targetVehicle
-            local vehicles = workspace:WaitForChild("Vehicles"):GetChildren()
-            local closestVehicle = nil
-            local closestDistance = math.huge
-            local maxDistance = 20
-            for i,v in pairs(workspace.Vehicles:GetChildren()) do
-                if v:FindFirstChild("_VehicleState_"..localPlayer.Name) then
-                    targetVehicle = v
+            if not carSpawned then
+                task.spawn(function()
+                    carSpawned = true
+                    task.wait(90)
+                    carSpawned = false
+                end)
+                spawnVehicle("Camaro")
+                --find closest vehicle and set it to targetVehicle
+                local vehicles = workspace:WaitForChild("Vehicles"):GetChildren()
+                local closestVehicle = nil
+                local closestDistance = math.huge
+                local maxDistance = 20
+                for i,v in pairs(workspace.Vehicles:GetChildren()) do
+                    if v:FindFirstChild("_VehicleState_"..localPlayer.Name) then
+                        targetVehicle = v
+                    end
                 end
+                print("Spawned vehicle:", targetVehicle.Name, "at distance:", closestDistance)
+                vehicleEntered = true
+                state = "locatetarget"
+            else
+                state = "vehiclefind"
             end
-            print("Spawned vehicle:", targetVehicle.Name, "at distance:", closestDistance)
-            vehicleEntered = true
-            state = "locatetarget"
         end
         if state == "vehicleapproach" then
             print("State: vehicleapproach, Target Vehicle:", targetVehicle.Name)
