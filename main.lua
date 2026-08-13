@@ -304,7 +304,7 @@ textlabel.Parent = screenGui
 
 local walkspeed = 50
 local flyspeed = 120
-local carflyspeed = 350
+local carflyspeed = 300
 local cruisealt = 500
 
 local targetPlayer = nil
