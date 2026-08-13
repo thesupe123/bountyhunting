@@ -513,6 +513,15 @@ runService.PreSimulation:Connect(function(dt)
                      else
                         keytap(0x20)
                         state = "followplayer"
+                        character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+                        character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
+                        task.spawn(function()
+                            character.HumanoidRootPart.Anchored = true
+                            task.wait()
+                            task.wait()
+                            character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+                            character.HumanoidRootPart.Anchored = false
+                        end)
                         character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
                         
                     end
