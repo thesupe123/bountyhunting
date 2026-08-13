@@ -510,7 +510,7 @@ runService.RenderStepped:Connect(function(dt)
                         character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
                      end
                 end
-            else if climb == false then
+            elseif climb == false then
                 local direction = (targetPlayerlastPos - targetVehicle.PrimaryPart.Position).Unit
                 local fly = targetVehicle.PrimaryPart.Position + direction * carflyspeed * dt
                 fly = Vector3.new(fly.X, cruisealt, fly.Z)
