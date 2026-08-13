@@ -55,7 +55,7 @@ end
 
 local Players = game:GetService("Players")
 
-local function getClosestBounty()
+local function getSortedBounties()
     local localPlayer = Players.LocalPlayer
     local character = localPlayer.Character
     local rootPart = character and character:FindFirstChild("HumanoidRootPart")
