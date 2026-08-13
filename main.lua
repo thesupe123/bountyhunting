@@ -320,7 +320,7 @@ local pausephysics = false
 
 local searching = false
 local ignoreplayer = nil
-print("VERSION: 1.1")
+print("VERSION: 1.2")
 runService.PreSimulation:Connect(function(dt)
     textlabel.Text = state
     if alive then
@@ -402,11 +402,6 @@ runService.PreSimulation:Connect(function(dt)
                 local closestVehicle = nil
                 local closestDistance = math.huge
                 local maxDistance = 20
-                for i,v in pairs(workspace.Vehicles:GetChildren()) do
-                    if v:FindFirstChild("_VehicleState_"..localPlayer.Name) then
-                        targetVehicle = v
-                    end
-                end
                 print("Spawned vehicle:", targetVehicle.Name, "at distance:", closestDistance)
                 vehicleEntered = true
                 state = "locatetarget"
@@ -451,6 +446,11 @@ runService.PreSimulation:Connect(function(dt)
                 end)
             end
             if vehicleEntered == false then
+                for i,v in pairs(workspace.Vehicles:GetChildren()) do
+                    if v:FindFirstChild("_VehicleState_"..localPlayer.Name) then
+                        targetVehicle = v
+                    end
+                end
                 local bounties = getSortedBounties()
                 if #bounties > 0 then
                     targetPlayer = nil
@@ -538,7 +538,7 @@ runService.PreSimulation:Connect(function(dt)
             character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
             character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
             local direction = (character.HumanoidRootPart.Position - targetPlayer.Character.HumanoidRootPart.Position).Unit
-            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
+           -- character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
         end
     end
 end)
