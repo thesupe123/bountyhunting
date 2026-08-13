@@ -478,7 +478,7 @@ runService.PreSimulation:Connect(function(dt)
                     end
                 end
                 local bounties = getSortedBounties()
-                if #bounties > 0 then
+                if bounties then
                     targetPlayer = nil
                     local selectedBounty = nil
 
