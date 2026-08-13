@@ -354,6 +354,7 @@ runService.RenderStepped:Connect(function(dt)
                 if vehicle.Name == "Jeep" or vehicle.Name == "Camaro" then
                     local distance = (vehicle.PrimaryPart.Position - character.HumanoidRootPart.Position).Magnitude
                     local occupied = vehicleState(vehicle)
+                    print(occupied)
                     if distance < closestDistance and distance <= maxDistance and occupied == nil then
                         closestDistance = distance
                         closestVehicle = vehicle
@@ -427,7 +428,7 @@ runService.RenderStepped:Connect(function(dt)
                     local topBounty = bounties[1]
                     targetPlayer = Players:FindFirstChild(topBounty.Username)
                     if targetPlayer then
-                        print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
+                       -- print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
                         if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
                             if targetVehicle.PrimaryPart.Position.Y < cruisealt then
                                 targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
