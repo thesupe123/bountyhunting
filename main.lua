@@ -234,7 +234,7 @@ local function isPlayerBelowSomething(player, maxDistance)
 
     local raycastParams = RaycastParams.new()
     raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-    raycastParams.FilterDescendantsInstances = {character}
+    raycastParams.FilterDescendantsInstances = {character, workspace.Vehicles}
 
     local origin = rootPart.Position
     local direction = Vector3.new(0, maxDistance, 0)
@@ -315,7 +315,7 @@ local climb = false
 local vehicleEntered = false
 
 local searching = false
-
+local ignoreplayer = nil
 runService.RenderStepped:Connect(function(dt)
     textlabel.Text = state
     if alive then
@@ -442,13 +442,13 @@ runService.RenderStepped:Connect(function(dt)
                     -- Loop through sorted bounties to find the first player with a spawned character
                     for _, bounty in ipairs(bounties) do
                         local player = Players:FindFirstChild(bounty.Username)
-                        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player ~= ignoreplayer then
                             targetPlayer = player
                             selectedBounty = bounty
                             break
                         end
                     end
-
+                    ignoreplayer = nil
                     if targetPlayer and selectedBounty then
                         print("Targeting player:", targetPlayer.Name, "with bounty:", selectedBounty.Bounty)
                         state = "targetapproach"
@@ -484,7 +484,8 @@ runService.RenderStepped:Connect(function(dt)
                 local faketarget = Vector3.new(targetPlayer.Character.HumanoidRootPart.Position.X, cruisealt, targetPlayer.Character.HumanoidRootPart.Position.Z)
                 if (faketarget-fakeplayer).Magnitude < 10 then
                      if isPlayerBelowSomething(targetPlayer, 20) then
-                        print("Player is below something")
+                        state = "locatetarget"
+                        ignoreplayer = targetPlayer
                      else
                         keytap(0x20)
                         state = "followplayer"
