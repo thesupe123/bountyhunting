@@ -431,9 +431,9 @@ runService.RenderStepped:Connect(function(dt)
                         if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
                             if targetVehicle.PrimaryPart.Position.Y < cruisealt then
                                 targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
+                            else
+                                state = "targetapproach"
                             end
-                        else
-                            state = "targetapproach"
                         end
                     else
                         print("Target player not found in the game.")
