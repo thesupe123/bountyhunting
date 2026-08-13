@@ -55,52 +55,78 @@ end
 
 local Players = game:GetService("Players")
 
-local function getSortedBounties()
+local function getClosestBounty()
+    local localPlayer = Players.LocalPlayer
+    local character = localPlayer.Character
+    local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+    if not rootPart then
+        return nil
+    end
+
     local board = workspace:WaitForChild("BountyBoard")
     local wanted = board.Board.MostWanted.Board
-    local bountyTable = {}
+
+    -- Build a lookup table: username -> bounty amount
+    local bountyLookup = {}
 
     for _, playerFrame in pairs(wanted:GetChildren()) do
         local bountyTextObject = playerFrame:FindFirstChild("BountyText")
-        -- Change "DisplayName" to whatever the actual text label for the name is called in the frame
-        local displayNameObject = playerFrame:FindFirstChild("NameText") 
-        
+        local displayNameObject = playerFrame:FindFirstChild("NameText")
+
         if bountyTextObject and displayNameObject then
-            -- 1. Calculate the Bounty
             local splitTable = string.split(bountyTextObject.Text, "$")
             local rawAmount = splitTable[2]
             local bountyAmount = 0
-            
+
             if rawAmount then
                 local cleanText = string.gsub(rawAmount, ",", "")
                 bountyAmount = tonumber(cleanText) or 0
             end
-            
-            -- 2. Convert Display Name to Username
+
             local uiDisplayName = displayNameObject.Text
-            local actualUsername = uiDisplayName -- Fallback just in case they left the game
-            
+            local actualUsername = uiDisplayName
+
             for _, player in pairs(Players:GetPlayers()) do
                 if player.DisplayName == uiDisplayName then
                     actualUsername = player.Name
                     break
                 end
             end
-            
-            -- 3. Insert into our table
-            table.insert(bountyTable, {
-                Username = actualUsername,
-                Bounty = bountyAmount
-            })
+
+            bountyLookup[actualUsername] = bountyAmount
         end
     end
 
-    -- 4. Sort the table from Highest to Lowest
-    table.sort(bountyTable, function(a, b)
-        return a.Bounty > b.Bounty 
-    end)
+    -- Find the closest player (excluding ourselves)
+    local closestPlayer = nil
+    local closestDistance = math.huge
 
-    return bountyTable
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer then
+            local otherChar = player.Character
+            local otherRoot = otherChar and otherChar:FindFirstChild("HumanoidRootPart")
+
+            if otherRoot then
+                local distance = (otherRoot.Position - rootPart.Position).Magnitude
+                if distance < closestDistance then
+                    closestDistance = distance
+                    closestPlayer = player
+                end
+            end
+        end
+    end
+
+    if not closestPlayer then
+        return nil
+    end
+
+    return {
+        Player = closestPlayer,
+        Username = closestPlayer.Name,
+        Bounty = bountyLookup[closestPlayer.Name] or 0,
+        Distance = closestDistance
+    }
 end
 
 local function joinServer(jobid)
