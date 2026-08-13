@@ -429,7 +429,7 @@ runService.RenderStepped:Connect(function(dt)
         if state == "locatetarget" then
             if vehicleEntered then
                 task.spawn(function()
-                    task.wait(1)
+                    task.wait(3)
                     vehicleEntered = false
                 end)
             end
