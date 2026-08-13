@@ -38,7 +38,7 @@ local function getTotalBounty()
     local wanted = board.Board.MostWanted.Board
     local bounty = 0
 
-    for i, playerFrame in pairs(wanted:getChildren()) do
+    for i, playerFrame in pairs(wanted:GetChildren()) do
         local bountyTextObject = playerFrame:FindFirstChild("BountyText")
         if bountyTextObject then
             local splitTable = string.split(bountyTextObject.Text, "$")
@@ -445,7 +445,7 @@ runService.RenderStepped:Connect(function(dt)
                     else
                         print("Target player not found in the game.")
                     end
-                elsetr
+                else
                     print("No players with bounties found.")
                 end
             end
