@@ -488,7 +488,7 @@ runService.PreSimulation:Connect(function(dt)
                     targetVehicle.PrimaryPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
                 else
                     climb = false
-                    carflyspeed = 250
+                    carflyspeed = 350
                     print("climb finished")
                 end
             end
@@ -538,7 +538,7 @@ runService.PreSimulation:Connect(function(dt)
             character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
             character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
             local direction = (character.HumanoidRootPart.Position - targetPlayer.Character.HumanoidRootPart.Position).Unit
-           -- character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
+            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
         end
     end
 end)
