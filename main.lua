@@ -320,8 +320,6 @@ local pausephysics = false
 
 local searching = false
 local ignoreplayer = nil
-
-local jumpdelay = false
 print("VERSION: 1.3")
 runService.PreSimulation:Connect(function(dt)
     textlabel.Text = state
@@ -523,9 +521,6 @@ runService.PreSimulation:Connect(function(dt)
                             task.wait()
                             character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
                             character.HumanoidRootPart.Anchored = false
-                            jumpdelay = true
-                            task.wait(1)
-                            jumpdelay = false
                         end)
                         character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
                         
@@ -539,11 +534,9 @@ runService.PreSimulation:Connect(function(dt)
                 print("Target player not found or does not have a character.")
             end
         end
-        if state == "followplayer" and not jumpdelay then
-            character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
-            character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
-            local direction = (character.HumanoidRootPart.Position - targetPlayer.Character.HumanoidRootPart.Position).Unit
-            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
+        if state == "followplayer" then
+            local direction = (targetPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Unit
+           -- character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
         end
     end
 end)
