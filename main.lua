@@ -308,7 +308,7 @@ local climb = false
 local vehicleEntered = false
 
 
-runService.Stepped:Connect(function(dt)
+runService.RenderStepped:Connect(function(dt)
     textlabel.Text = state
     if alive then
         if state == "start" then
