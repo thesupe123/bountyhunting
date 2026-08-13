@@ -431,7 +431,7 @@ runService.RenderStepped:Connect(function(dt)
                     local topBounty = bounties[1]
                     targetPlayer = Players:FindFirstChild(topBounty.Username)
                     if targetPlayer then
-                       -- print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
+                        print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
                         state =  "targetapproach"
                         climb = true
                     else
