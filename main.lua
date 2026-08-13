@@ -481,6 +481,8 @@ runService.RenderStepped:Connect(function(dt)
             if climb then
                 carflyspeed = 250
                 if targetVehicle.PrimaryPart.Position.Y <= cruisealt then
+                    targetVehicle.PrimaryPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+                    targetVehicle.PrimaryPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
                     targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                 else
                     climb = false
@@ -496,6 +498,8 @@ runService.RenderStepped:Connect(function(dt)
                 local direction = (targetPosition - targetVehicle.PrimaryPart.Position).Unit
                 local fly = targetVehicle.PrimaryPart.Position + direction * carflyspeed * dt
                 fly = Vector3.new(fly.X, cruisealt, fly.Z)
+                targetVehicle.PrimaryPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+                targetVehicle.PrimaryPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(fly)
                 local fakeplayer = Vector3.new(character.HumanoidRootPart.Position.X, cruisealt, character.HumanoidRootPart.Position.Z)
                 local faketarget = Vector3.new(targetPlayer.Character.HumanoidRootPart.Position.X, cruisealt, targetPlayer.Character.HumanoidRootPart.Position.Z)
@@ -515,6 +519,7 @@ runService.RenderStepped:Connect(function(dt)
                 local direction = (targetPlayerlastPos - targetVehicle.PrimaryPart.Position).Unit
                 local fly = targetVehicle.PrimaryPart.Position + direction * carflyspeed * dt
                 fly = Vector3.new(fly.X, cruisealt, fly.Z)
+                targetVehicle.PrimaryPart.CFrame = CFrame.new(fly)
                 print("Target player not found or does not have a character.")
             end
         end
