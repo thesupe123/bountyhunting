@@ -523,7 +523,6 @@ runService.PreSimulation:Connect(function(dt)
                             character.HumanoidRootPart.Anchored = false
                         end)
                         character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
-                        
                     end
                 end
             elseif climb == false then
@@ -536,7 +535,7 @@ runService.PreSimulation:Connect(function(dt)
         end
         if state == "followplayer" then
             local direction = (targetPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Unit
-           -- character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
+            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
         end
     end
 end)
