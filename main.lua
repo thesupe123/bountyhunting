@@ -297,7 +297,7 @@ textlabel.Parent = screenGui
 
 local walkspeed = 50
 local flyspeed = 120
-local carflyspeed = 300
+local carflyspeed = 400
 local cruisealt = 500
 
 local targetPlayer = nil
@@ -437,7 +437,7 @@ runService.RenderStepped:Connect(function(dt)
                     else
                         print("Target player not found in the game.")
                     end
-                else
+                elsetr
                     print("No players with bounties found.")
                 end
             end
