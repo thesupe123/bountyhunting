@@ -448,6 +448,7 @@ runService.RenderStepped:Connect(function(dt)
                     targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                 else
                     climb = false
+                    print("climb finished")
                 end
             end
             if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and not climb then
@@ -458,7 +459,7 @@ runService.RenderStepped:Connect(function(dt)
                 fly = Vector3.new(fly.X, cruisealt, fly.Z)
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(fly)
             else
-               -- print("Target player not found or does not have a character.")
+                print("Target player not found or does not have a character.")
             end
         end
     end
