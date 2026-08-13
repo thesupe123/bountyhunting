@@ -310,6 +310,8 @@ local cruisealt = 500
 local targetPlayer = nil
 local targetVehicle = nil
 
+local targetPlayerlastPos = Vector3.new(0,0,0)
+
 local climb = false
 
 local vehicleEntered = false
@@ -444,6 +446,7 @@ runService.RenderStepped:Connect(function(dt)
                         local player = Players:FindFirstChild(bounty.Username)
                         if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player ~= ignoreplayer then
                             targetPlayer = player
+                            targetPlayerlastPos = player.Character.HumanoidRootPart.Position
                             selectedBounty = bounty
                             break
                         end
@@ -475,6 +478,7 @@ runService.RenderStepped:Connect(function(dt)
             if targetPlayer.Character and climb == false then
                 searching = false
                 local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
+                targetPlayerlastPos = targetPosition
                 targetPosition = Vector3.new(targetPosition.X, cruisealt, targetPosition.Z)
                 local direction = (targetPosition - targetVehicle.PrimaryPart.Position).Unit
                 local fly = targetVehicle.PrimaryPart.Position + direction * carflyspeed * dt
@@ -493,6 +497,9 @@ runService.RenderStepped:Connect(function(dt)
                      end
                 end
             else
+                local direction = (targetPlayerlastPos - targetVehicle.PrimaryPart.Position).Unit
+                local fly = targetVehicle.PrimaryPart.Position + direction * carflyspeed * dt
+                fly = Vector3.new(fly.X, cruisealt, fly.Z)
                 print("Target player not found or does not have a character.")
             end
         end
