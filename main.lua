@@ -481,7 +481,6 @@ runService.RenderStepped:Connect(function(dt)
                         end
                     end)
                 end
-                local direction = (v - character.HumanoidRootPart.Position).Unit
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + direction*carflyspeed)
             end
         end
