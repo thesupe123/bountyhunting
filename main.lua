@@ -26,6 +26,13 @@ local spawnTP = {
     Vector3.new(1805,28, -802)
 }
 
+local searchQ = {
+    Vector3.new(1506, 435, -3849),
+    Vector3.new(1238, 459, -1723),
+    Vector3.new(-327, 394, 2835),
+    Vector3.new(631, 377, 1193)
+}
+
 local function getTotalBounty()
     local board = workspace:WaitForChild("BountyBoard")
     local wanted = board.Board.MostWanted.Board
@@ -307,6 +314,7 @@ local climb = false
 
 local vehicleEntered = false
 
+local searching = false
 
 runService.RenderStepped:Connect(function(dt)
     textlabel.Text = state
@@ -452,6 +460,7 @@ runService.RenderStepped:Connect(function(dt)
                 end
             end
             if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and not climb then
+                searching = false
                 local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
                 targetPosition = Vector3.new(targetPosition.X, cruisealt, targetPosition.Z)
                 local direction = (targetPosition - character.HumanoidRootPart.Position).Unit
@@ -460,6 +469,20 @@ runService.RenderStepped:Connect(function(dt)
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(fly)
             else
                 print("Target player not found or does not have a character.")
+                local direction = nil
+                if not searching then
+                    searching = true
+                    task.spawn(function()
+                        for i,v in ipairs(searchQ) do
+                            direction = (v - character.HumanoidRootPart.Position).Unit
+                            repeat
+                                task.wait(0.1) -- Pause execution briefly before checking again
+                            until (v - character.HumanoidRootPart.Position).Magnitude < 20
+                        end
+                    end)
+                end
+                local direction = (v - character.HumanoidRootPart.Position).Unit
+                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + direction*carflyspeed)
             end
         end
     end
