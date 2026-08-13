@@ -490,6 +490,7 @@ runService.RenderStepped:Connect(function(dt)
                      if isPlayerBelowSomething(targetPlayer, 20) then
                         state = "locatetarget"
                         ignoreplayer = targetPlayer
+                        print("player is under something")
                      else
                         keytap(0x20)
                         state = "followplayer"
