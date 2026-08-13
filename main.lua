@@ -472,14 +472,7 @@ runService.RenderStepped:Connect(function(dt)
                 local direction = nil
                 if not searching then
                     searching = true
-                    task.spawn(function()
-                        for i,v in ipairs(searchQ) do
-                            direction = (v - character.HumanoidRootPart.Position).Unit
-                            repeat
-                                task.wait(0.1) -- Pause execution briefly before checking again
-                            until (v - character.HumanoidRootPart.Position).Magnitude < 20
-                        end
-                    end)
+                  
                 end
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + direction*carflyspeed)
             end
