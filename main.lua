@@ -469,25 +469,20 @@ runService.RenderStepped:Connect(function(dt)
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(fly)
             else
                 print("Target player not found or does not have a character.")
+                local direction = nil
                 if not searching then
                     searching = true
-
                     task.spawn(function()
-                        for _, waypoint in ipairs(searchQ) do
-                            -- Continuously move the vehicle toward the current waypoint until within 20 studs
+                        for i,v in ipairs(searchQ) do
+                            direction = (v - character.HumanoidRootPart.Position).Unit
                             repeat
-                                local currentPos = character.HumanoidRootPart.Position
-                                local direction = (waypoint - currentPos).Unit
-
-                                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + direction * carflyspeed)
-
-                                task.wait(0.1)
-                            until (waypoint - currentPos).Magnitude < 20
+                                task.wait(0.1) -- Pause execution briefly before checking again
+                            until (v - character.HumanoidRootPart.Position).Magnitude < 20
                         end
-
-                        searching = false -- Reset searching state when finished
                     end)
                 end
+                local direction = (v - character.HumanoidRootPart.Position).Unit
+                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + direction*carflyspeed)
             end
         end
     end
