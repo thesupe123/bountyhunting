@@ -303,7 +303,10 @@ local cruisealt = 500
 local targetPlayer = nil
 local targetVehicle = nil
 
+local climb = false
+
 local vehicleEntered = false
+
 
 runService.RenderStepped:Connect(function(dt)
     textlabel.Text = state
@@ -429,13 +432,8 @@ runService.RenderStepped:Connect(function(dt)
                     targetPlayer = Players:FindFirstChild(topBounty.Username)
                     if targetPlayer then
                        -- print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
-                        if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                            if targetVehicle.PrimaryPart.Position.Y < cruisealt then
-                                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
-                            else
-                                state = "targetapproach"
-                            end
-                        end
+                        state =  "targetapproach"
+                        climb = true
                     else
                         print("Target player not found in the game.")
                     end
@@ -445,7 +443,14 @@ runService.RenderStepped:Connect(function(dt)
             end
         end
         if state == "targetapproach" then
-            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            if climb then
+                if targetVehicle.PrimaryPart.Position.Y < cruisealt then
+                    targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
+                else
+                    climb = false
+                end
+            end
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and not climb then
                 local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
                 targetPosition = Vector3.new(targetPosition.X, cruisealt, targetPosition.Z)
                 local direction = (targetPosition - character.HumanoidRootPart.Position).Unit
