@@ -316,10 +316,11 @@ local carSpawned = false
 local climb = false
 
 local vehicleEntered = false
+local pausephysics = false
 
 local searching = false
 local ignoreplayer = nil
-print("VERSION: 1")
+print("VERSION: 1.1")
 runService.PreSimulation:Connect(function(dt)
     textlabel.Text = state
     if alive then
@@ -514,8 +515,16 @@ runService.PreSimulation:Connect(function(dt)
                         state = "followplayer"
                         character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
                         character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
-                --        character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
-                     end
+                        task.spawn(function()
+                            character.HumanoidRootPart.Anchored = true
+                            task.wait()
+                            task.wait()
+                            character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+                            character.HumanoidRootPart.Anchored = false
+                        end)
+                        character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
+                        
+                    end
                 end
             elseif climb == false then
                 local direction = (targetPlayerlastPos - targetVehicle.PrimaryPart.Position).Unit
