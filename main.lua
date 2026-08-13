@@ -436,14 +436,25 @@ runService.RenderStepped:Connect(function(dt)
             if vehicleEntered == false then
                 local bounties = getSortedBounties()
                 if #bounties > 0 then
-                    local topBounty = bounties[1]
-                    targetPlayer = Players:FindFirstChild(topBounty.Username)
-                    if targetPlayer then
-                        print("Targeting player:", targetPlayer.Name, "with bounty:", topBounty.Bounty)
-                        state =  "targetapproach"
+                    targetPlayer = nil
+                    local selectedBounty = nil
+
+                    -- Loop through sorted bounties to find the first player with a spawned character
+                    for _, bounty in ipairs(bounties) do
+                        local player = Players:FindFirstChild(bounty.Username)
+                        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                            targetPlayer = player
+                            selectedBounty = bounty
+                            break
+                        end
+                    end
+
+                    if targetPlayer and selectedBounty then
+                        print("Targeting player:", targetPlayer.Name, "with bounty:", selectedBounty.Bounty)
+                        state = "targetapproach"
                         climb = true
                     else
-                        print("Target player not found in the game.")
+                        print("No valid target with a active character found in game.")
                     end
                 else
                     print("No players with bounties found.")
@@ -471,19 +482,6 @@ runService.RenderStepped:Connect(function(dt)
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(fly)
             else
                 print("Target player not found or does not have a character.")
-                local direction = nil
-                if not searching then
-                    searching = true
-                    task.spawn(function()
-                        for i,v in ipairs(searchQ) do
-                            direction = (v - character.HumanoidRootPart.Position).Unit
-                            repeat
-                                task.wait(0.1) -- Pause execution briefly before checking again
-                            until (v - character.HumanoidRootPart.Position).Magnitude < 20
-                        end
-                    end)
-                end
-                targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position + direction*carflyspeed)
             end
         end
     end
