@@ -472,7 +472,7 @@ runService.RenderStepped:Connect(function(dt)
                     print("climb finished")
                 end
             end
-            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and climb == false then
+            if targetPlayer.Character and climb == false then
                 searching = false
                 local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
                 targetPosition = Vector3.new(targetPosition.X, cruisealt, targetPosition.Z)
