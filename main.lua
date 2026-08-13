@@ -477,24 +477,14 @@ runService.PreSimulation:Connect(function(dt)
                         targetVehicle = v
                     end
                 end
-                local bounties = getSortedBounties()
+                local bounties = getSortedBounties(ignoreplayer)
                 if bounties then
-                    targetPlayer = nil
-                    local selectedBounty = nil
-
+                    targetPlayer = bounties.Player
                     -- Loop through sorted bounties to find the first player with a spawned character
-                    for _, bounty in ipairs(bounties) do
-                        local player = Players:FindFirstChild(bounty.Username)
-                        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player ~= ignoreplayer then
-                            targetPlayer = player
-                            targetPlayerlastPos = player.Character.HumanoidRootPart.Position
-                            selectedBounty = bounty
-                            break
-                        end
-                    end
                     ignoreplayer = nil
-                    if targetPlayer and selectedBounty then
-                        print("Targeting player:", targetPlayer.Name, "with bounty:", selectedBounty.Bounty)
+                    if targetPlayer and targetPlayer.Character then
+                        targetPlayerlastpos = targetPlayer.Character.HumanoidRootPart.Position
+                        print("Targeting player:", targetPlayer.Name, "with bounty:", bounties.Bounty)
                         state = "targetapproach"
                         climb = true
                     else
