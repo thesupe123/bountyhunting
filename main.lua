@@ -452,7 +452,7 @@ runService.RenderStepped:Connect(function(dt)
         end
         if state == "targetapproach" then
             if climb then
-                carflyspeed = 300
+                carflyspeed = 250
                 if targetVehicle.PrimaryPart.Position.Y <= cruisealt then
                     targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                 else
