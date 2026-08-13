@@ -319,7 +319,7 @@ local vehicleEntered = false
 
 local searching = false
 local ignoreplayer = nil
-runService.RenderStepped:Connect(function(dt)
+runService.PreSimulation:Connect(function(dt)
     textlabel.Text = state
     if alive then
         if state == "start" then
