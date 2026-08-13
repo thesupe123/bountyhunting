@@ -476,13 +476,28 @@ runService.RenderStepped:Connect(function(dt)
                 searching = false
                 local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
                 targetPosition = Vector3.new(targetPosition.X, cruisealt, targetPosition.Z)
-                local direction = (targetPosition - character.HumanoidRootPart.Position).Unit
+                local direction = (targetPosition - targetVehicle.PrimaryPart.Position).Unit
                 local fly = targetVehicle.PrimaryPart.Position + direction * carflyspeed * dt
                 fly = Vector3.new(fly.X, cruisealt, fly.Z)
                 targetVehicle.PrimaryPart.CFrame = CFrame.new(fly)
+                local fakeplayer = Vector3.new(character.HumanoidRootPart.Position.X, cruisealt, character.HumanoidRootPart.Position.Z)
+                local faketarget = Vector3.new(targetPlayer.Character.HumanoidRootPart.Position.X, cruisealt, targetPlayer.Character.HumanoidRootPart.Position.Z)
+                if (faketarget-fakeplayer).Magnitude < 10 then
+                     if isPlayerBelowSomething(targetPlayer, 20) then
+                        print("Player is below something")
+                     else
+                        keytap(0x20)
+                        state = "followplayer"
+                        character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Y, character.HumanoidRootPart.Z))
+                     end
+                end
             else
                 print("Target player not found or does not have a character.")
             end
+        end
+        if state == "followplayer" then
+            local direction = (character.HumanoidRootPart.Position - targetPlayer.Character.HumanoidRootPart.Position).Unit
+            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
         end
     end
 end)
