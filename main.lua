@@ -329,7 +329,7 @@ textlabel.Parent = screenGui
 
 
 local walkspeed = 50
-local flyspeed = 120
+local flyspeed = 20
 local carflyspeed = 300
 local cruisealt = 500
 
@@ -530,6 +530,9 @@ runService.PreSimulation:Connect(function(dt)
                         print("player is under something")
                      else
                         if not jumpwait then
+                            jumpwait = true
+                            task.wait(1)
+                            jumpwait = false
                             keytap(0x20)
                             state = "followplayer"
                             character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
