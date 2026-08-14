@@ -558,7 +558,7 @@ runService.PreSimulation:Connect(function(dt)
         end
         if state == "followplayer" then
             local direction = (targetPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Unit
-            --character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
+            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
         end
     end
 end)
