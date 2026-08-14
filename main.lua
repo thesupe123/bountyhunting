@@ -227,10 +227,9 @@ ws.OnMessage:Connect(function(message)
     end
     jobid = data.job_id
 end)
-local targetaim = workspace.Grass
 local silentAimEnabled = state
 
-local function silentAim(state)
+local function silentAim()
     local raycastModule = require(replicatedStorage.Module.RayCast)
 
     if silentAimEnabled then
