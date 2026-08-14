@@ -544,7 +544,7 @@ runService.PreSimulation:Connect(function(dt)
                                 character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
                                 character.HumanoidRootPart.Anchored = false
                             end)
-                            character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
+                            targetVehicle.PrimaryPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
                         end
                     end
                 end
