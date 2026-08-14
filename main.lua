@@ -578,6 +578,7 @@ runService.PreSimulation:Connect(function(dt)
             character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
             if (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
                 task.spawn(function()
+                    localPlayer.Folder.Handcuffs.InventoryEquipRemote:Fire(true)
                     if not cuffing then
                         cuffing = true
                         keypress(0x45)
@@ -592,7 +593,7 @@ runService.PreSimulation:Connect(function(dt)
             if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
                     state = "vehiclefind"
             end
-            if targetPlayer.Character.Folder:FindFirstChild("Cuffed") then
+            if targetPlayer.Folder:FindFirstChild("Cuffed") then
                 local newplayer = getSortedBounties(targetPlayer)
                 targetPlayer = newplayer
                 if (newplayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 50 then
