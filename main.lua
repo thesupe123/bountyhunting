@@ -521,12 +521,13 @@ runService.PreSimulation:Connect(function(dt)
                 targetVehicle.PrimaryPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
                 local fakeplayer = Vector3.new(character.HumanoidRootPart.Position.X, cruisealt, character.HumanoidRootPart.Position.Z)
                 local faketarget = Vector3.new(targetPlayer.Character.HumanoidRootPart.Position.X, cruisealt, targetPlayer.Character.HumanoidRootPart.Position.Z)
-                if (faketarget-fakeplayer).Magnitude < 10 then
+                if (faketarget-fakeplayer).Magnitude < 5 then
                      if isPlayerBelowSomething(targetPlayer, 20) then
                         state = "locatetarget"
                         ignoreplayer = targetPlayer
                         print("player is under something")
                      else
+                        task.wait(1)
                         keytap(0x20)
                         state = "followplayer"
                         character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
