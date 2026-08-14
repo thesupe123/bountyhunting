@@ -235,7 +235,7 @@ local function silentAim()
     if silentAimEnabled then
         currentTarget = targetaim
 
-        getgenv().old = getgenv() or raycastModule.RayIgnoreNonCollideWithIgnoreList
+        getgenv().old = getgenv().old or raycastModule.RayIgnoreNonCollideWithIgnoreList
 
         raycastModule.RayIgnoreNonCollideWithIgnoreList = function(...)
             local arg = {getgenv().old(...)}
