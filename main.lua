@@ -18,12 +18,10 @@ local ws = WebSocket.connect("ws://localhost:8766")
 local jobid = game.JobId
 
 local spawnTP = {
-    Vector3.new(1725, 23, -4006),
-    Vector3.new(-1262, 18, -1542),
-    Vector3.new(1815, 25, -884),
-    Vector3.new(714, 44, 1062),
-    Vector3.new(1409, 23, -3914),
-    Vector3.new(1805,28, -802)
+    Vector3.new(727, 44, 1090),
+    Vector3.new(-1261, 18, -1549),
+    Vector3.new(1746, 23, -4006),
+    Vector3.new(1427, 23, -3912)
 }
 
 local searchQ = {
