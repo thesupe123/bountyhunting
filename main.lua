@@ -310,6 +310,9 @@ local function vehicleState(vehicle)
     end
 end
 
+
+
+
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BountyHunterGUI"
 screenGui.IgnoreGuiInset = true
@@ -346,6 +349,7 @@ local pausephysics = false
 
 local searching = false
 local ignoreplayer = nil
+local cuffing = false
 
 local jumpwait = false
 print("VERSION: 1.3")
@@ -572,6 +576,26 @@ runService.PreSimulation:Connect(function(dt)
             character.HumanoidRootPart.Anchored = false
             local direction = ((targetPlayer.Character.HumanoidRootPart.Position+Vector3.new(0,6,0)) - character.HumanoidRootPart.Position).Unit
             character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
+            if (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
+                task.spawn(function()
+                    if not cuffing then
+                        cuffing = true
+                        keypress(0x45)
+                        task.wait(1)
+                        task.wait()
+                        keyrelease(0x45)
+                        task.wait()
+                        cuffing = false
+                    end
+                end)
+            end
+            if targetPlayer.Character.Folder:FindFirstChild("Cuffed") then
+                local newplayer = getSortedBounties(targetPlayer)
+                targetPlayer = newplayer
+                if (newplayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 50 then
+                    state = "vehiclefind"
+                end
+            end
         end
     end
 end)
