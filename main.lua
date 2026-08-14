@@ -231,21 +231,25 @@ local silentAimEnabled = state
 
 local function silentAim()
     local raycastModule = require(replicatedStorage.Module.RayCast)
-
+    
     if silentAimEnabled then
         currentTarget = targetaim
-
+        
+        -- Correctly store the original function once
         getgenv().old = getgenv().old or raycastModule.RayIgnoreNonCollideWithIgnoreList
-
+        
+        -- Hook the module method
         raycastModule.RayIgnoreNonCollideWithIgnoreList = function(...)
             local arg = {getgenv().old(...)}
-            local scriptname = tostring(getfenv(2).script)
+            local scriptName = tostring(getfenv(2).script) -- Fixed variable casing
+            
             if (scriptName == "BulletEmitter" or scriptName == "Taser") and currentTarget then
                 arg[1] = targetaim
                 arg[2] = targetaim.Position
             end
+            
+            return unpack(arg) -- Placed inside the function body
         end
-        return unpack(arg)
     end
 end
 
