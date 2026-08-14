@@ -20,8 +20,8 @@ local jobid = game.JobId
 local spawnTP = {
     Vector3.new(727, 44, 1090),
     Vector3.new(-1261, 18, -1549),
-    Vector3.new(1746, 23, -4006),
-    Vector3.new(1427, 23, -3912)
+    Vector3.new(1751, 23, -4005),
+    Vector3.new(1821, 25, -694)
 }
 
 local searchQ = {
@@ -421,8 +421,15 @@ runService.PreSimulation:Connect(function(dt)
                 state = "vehicleapproach"
                 print("Found vehicle:", targetVehicle.Name, "at distance:", closestDistance)
             else
-                state = "vehiclespawn"
+                state = "prepspawn"
                 print("No vehicle found within range. Switching state to:", state)
+            end
+        end
+        if state == "prepspawn" then
+            local targetpos = character.HumanoidRootPart.Position(character.HumanoidRootPart.CFrame.LookVector * 10)
+            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ character.HumanoidRootPart.CFrame.LookVector*5*dt)
+            if (character.HumanoidRootPart.Position-targetpos).Magnitude < 2 then
+                state = "vehiclespawn"
             end
         end
         if state == "vehiclespawn" then
