@@ -55,7 +55,7 @@ end
 
 local Players = game:GetService("Players")
 
-local function getSortedBounties()
+local function getSortedBounties(ignoreplayer)
     local localPlayer = Players.LocalPlayer
     local character = localPlayer.Character
     local rootPart = character and character:FindFirstChild("HumanoidRootPart")
@@ -103,7 +103,7 @@ local function getSortedBounties()
     local closestDistance = math.huge
 
     for _, player in pairs(Players:GetPlayers()) do
-        if player ~= localPlayer and player.Team == game:GetService("Teams").Criminal then
+        if player ~= localPlayer and player.Team == game:GetService("Teams").Criminal and player ~= ignoreplayer then
             local otherChar = player.Character
             local otherRoot = otherChar and otherChar:FindFirstChild("HumanoidRootPart")
 
@@ -531,7 +531,7 @@ runService.PreSimulation:Connect(function(dt)
                      else
                         if not jumpwait then
                             jumpwait = true
-                            task.wait(1)
+                            task.wait(2)
                             jumpwait = false
                             keytap(0x20)
                             state = "followplayer"
