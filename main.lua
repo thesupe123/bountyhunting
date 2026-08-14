@@ -581,13 +581,16 @@ runService.PreSimulation:Connect(function(dt)
                     if not cuffing then
                         cuffing = true
                         keypress(0x45)
-                        task.wait(1)
+                        task.wait(1.5)
                         task.wait()
                         keyrelease(0x45)
                         task.wait()
                         cuffing = false
                     end
                 end)
+            end
+            if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
+                    state = "vehiclefind"
             end
             if targetPlayer.Character.Folder:FindFirstChild("Cuffed") then
                 local newplayer = getSortedBounties(targetPlayer)
