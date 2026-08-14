@@ -542,7 +542,6 @@ runService.PreSimulation:Connect(function(dt)
                                 task.wait()
                                 task.wait()
                                 character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
-                                character.HumanoidRootPart.Anchored = false
                             end)
                             targetVehicle.PrimaryPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
                         end
@@ -557,6 +556,7 @@ runService.PreSimulation:Connect(function(dt)
             end
         end
         if state == "followplayer" then
+            character.HumanoidRootPart.Anchored = false
             local direction = (targetPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Unit
             character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
         end
