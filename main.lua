@@ -574,8 +574,10 @@ runService.PreSimulation:Connect(function(dt)
         end
         if state == "followplayer" then
             character.HumanoidRootPart.Anchored = false
-            local direction = ((targetPlayer.Character.HumanoidRootPart.Position+Vector3.new(0,6,0)) - character.HumanoidRootPart.Position).Unit
-            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
+            if targetPlayer.Character then
+                local direction = ((targetPlayer.Character.HumanoidRootPart.Position+Vector3.new(0,6,0)) - character.HumanoidRootPart.Position).Unit
+                character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
+            end
             if (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
                 task.spawn(function()
                     localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
