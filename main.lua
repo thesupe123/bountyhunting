@@ -531,7 +531,7 @@ runService.PreSimulation:Connect(function(dt)
                      else
                         if not jumpwait then
                             jumpwait = true
-                            task.wait(1)
+                            task.wait(3)
                             jumpwait = false
                             keytap(0x20)
                             state = "followplayer"
