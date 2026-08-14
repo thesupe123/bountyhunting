@@ -329,7 +329,7 @@ textlabel.Parent = screenGui
 
 
 local walkspeed = 50
-local flyspeed = 20
+local flyspeed = 120
 local carflyspeed = 300
 local cruisealt = 500
 
@@ -530,9 +530,6 @@ runService.PreSimulation:Connect(function(dt)
                         print("player is under something")
                      else
                         if not jumpwait then
-                            jumpwait = true
-                            task.wait(3)
-                            jumpwait = false
                             keytap(0x20)
                             state = "followplayer"
                             character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
@@ -544,6 +541,9 @@ runService.PreSimulation:Connect(function(dt)
                                 character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
                                 character.HumanoidRootPart.Anchored = false
                             end)
+                            jumpwait = true
+                            task.wait(1)
+                            jumpwait = false
                             character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(character.HumanoidRootPart.Position.X, targetPlayer.Character.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
                         end
                     end
@@ -558,7 +558,7 @@ runService.PreSimulation:Connect(function(dt)
         end
         if state == "followplayer" then
             local direction = (targetPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Unit
-            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed)
+            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
         end
     end
 end)
