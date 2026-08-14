@@ -329,7 +329,7 @@ textlabel.Parent = screenGui
 
 
 local walkspeed = 50
-local flyspeed = 20
+local flyspeed = 120
 local carflyspeed = 300
 local cruisealt = 500
 
@@ -558,7 +558,7 @@ runService.PreSimulation:Connect(function(dt)
         if state == "followplayer" then
             character.HumanoidRootPart.Anchored = false
             local direction = (targetPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Unit
-            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
+            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+Vector3.new(0,10,0)+ direction*flyspeed*dt)
         end
     end
 end)
