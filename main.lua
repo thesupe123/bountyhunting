@@ -341,6 +341,7 @@ textlabel.Parent = screenGui
 local walkspeed = 50
 local flyspeed = 120
 local carflyspeed = 300
+local constcruisealt = 500
 local cruisealt = 500
 
 local targetPlayer = nil
@@ -524,7 +525,7 @@ runService.PreSimulation:Connect(function(dt)
         if state == "targetapproach" then
             if climb then
                 carflyspeed = 250
-                cruisealt += targetPlayerlastPos.Y
+                cruisealt = constcruisealt+targetPlayerlastpos.Y
                 if targetVehicle.PrimaryPart.Position.Y <= cruisealt then
                     targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                     targetVehicle.PrimaryPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
