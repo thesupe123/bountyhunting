@@ -616,9 +616,9 @@ runService.PreSimulation:Connect(function(dt)
                 else
                     toggleSilentAim(false)
                 end
-            end
-            if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
+                if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
                     state = "vehiclefind"
+                end
             end
             if targetPlayer.Folder:FindFirstChild("Cuffed") then
                 local newplayer = getSortedBounties(targetPlayer)
