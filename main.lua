@@ -349,10 +349,20 @@ local ignoreplayer = nil
 
 local jumpwait = false
 print("VERSION: 1.3")
+
+Players.PlayerRemoving:Connect(function(plr)
+    if targetPlayer then
+        if plr == targetPlayer then
+            character.Humanoid.Health = 0
+        end
+    end
+end)
+
 runService.PreSimulation:Connect(function(dt)
     textlabel.Text = state
     if alive then
         if state == "start" then
+            targetVehicle = nil
             print("under something")
             local closestSpawn = nil
             local closestDistance = math.huge
@@ -478,6 +488,9 @@ runService.PreSimulation:Connect(function(dt)
                     if v:FindFirstChild("_VehicleState_"..localPlayer.Name) then
                         targetVehicle = v
                     end
+                end
+                if targetVehicle == nil then
+                    state = "vehiclefind"
                 end
                 local bounties = getSortedBounties(ignoreplayer)
                 if bounties then
