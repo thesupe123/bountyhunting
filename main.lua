@@ -103,7 +103,7 @@ local function getSortedBounties()
     local closestDistance = math.huge
 
     for _, player in pairs(Players:GetPlayers()) do
-        if player ~= localPlayer then
+        if player ~= localPlayer and player.Team.Value == game:GetService("Teams").Criminal then
             local otherChar = player.Character
             local otherRoot = otherChar and otherChar:FindFirstChild("HumanoidRootPart")
 
