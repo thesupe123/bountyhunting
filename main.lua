@@ -183,7 +183,7 @@ local Debris = game:GetService("Debris")
 
 local function generateWaypoints(origin: Vector3, endPosition: Vector3, returnstate: string): {PathWaypoint}
 	local path = PathfindingService:CreatePath({
-		AgentRadius = 5,
+		AgentRadius = 4,
 		AgentHeight = 6,
 		AgentCanJump = true,
 	})
