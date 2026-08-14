@@ -227,13 +227,14 @@ ws.OnMessage:Connect(function(message)
     end
     jobid = data.job_id
 end)
+local targetaim = workspace.Grass
+local silentAimEnabled = state
 
-local function silentAim(state, part)
-    silentAimEnabled = state
+local function silentAim(state)
     local raycastModule = require(replicatedStorage.Module.RayCast)
 
     if silentAimEnabled then
-        currentTarget = part
+        currentTarget = targetaim
 
         getgenv().old = getgenv() or raycastModule.RayIgnoreNonCollideWithIgnoreList
 
@@ -241,8 +242,8 @@ local function silentAim(state, part)
             local arg = {getgenv().old(...)}
             local scriptname = tostring(getfenv(2).script)
             if (scriptName == "BulletEmitter" or scriptName == "Taser") and currentTarget then
-                arg[1] = part
-                arg[2] = part.Position
+                arg[1] = targetaim
+                arg[2] = targetaim.Position
             end
         end
         return unpack(arg)
@@ -353,7 +354,7 @@ local cuffing = false
 
 local jumpwait = false
 print("VERSION: 1.3")
-
+silentAim(false)
 Players.PlayerRemoving:Connect(function(plr)
     if targetPlayer then
         if plr == targetPlayer then
@@ -517,6 +518,7 @@ runService.PreSimulation:Connect(function(dt)
         if state == "targetapproach" then
             if climb then
                 carflyspeed = 250
+                cruisealt += targetPlayerlastPos.Y
                 if targetVehicle.PrimaryPart.Position.Y <= cruisealt then
                     targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                     targetVehicle.PrimaryPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
@@ -573,24 +575,40 @@ runService.PreSimulation:Connect(function(dt)
             end
         end
         if state == "followplayer" then
+            if silentAimEnabled == true then
+                keytap(0x01)
+            end
             character.HumanoidRootPart.Anchored = false
             if targetPlayer.Character then
                 local direction = ((targetPlayer.Character.HumanoidRootPart.Position+Vector3.new(0,6,0)) - character.HumanoidRootPart.Position).Unit
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
-            end
-            if (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
-                task.spawn(function()
-                    localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
-                    if not cuffing then
-                        cuffing = true
-                        keypress(0x45)
-                        task.wait(1.5)
-                        task.wait()
-                        keyrelease(0x45)
-                        task.wait()
-                        cuffing = false
+                if targetPlayer.Character.HumanoidRootPart.Velocity.Magnitude > 25 then
+                    if not silentAimEnabled then
+                        for _,vehicle in pairs(workspace.Vehicles:GetChildren()) do
+                            if vehicleState(vehicle) == targetPlayer.Name then
+                                targetaim = vehicle.PrimaryPart
+                                silentAimEnabled = true
+                                localPlayer.Folder.Pistol.InventoryEquipRemote:FireServer(true)
+                            end
+                        end
                     end
-                end)
+                elseif (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
+                    silentAimEnabled = false
+                    task.spawn(function()
+                        localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
+                        if not cuffing then
+                            cuffing = true
+                            keypress(0x45)
+                            task.wait(1.5)
+                            task.wait()
+                            keyrelease(0x45)
+                            task.wait()
+                            cuffing = false
+                        end
+                    end)
+                else
+                    silentAimEnabled = false
+                end
             end
             if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
                     state = "vehiclefind"
