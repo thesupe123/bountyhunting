@@ -578,7 +578,7 @@ runService.PreSimulation:Connect(function(dt)
             character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
             if (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
                 task.spawn(function()
-                    localPlayer.Folder.Handcuffs.InventoryEquipRemote:Fire(true)
+                    localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
                     if not cuffing then
                         cuffing = true
                         keypress(0x45)
