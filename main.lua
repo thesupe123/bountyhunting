@@ -227,33 +227,26 @@ ws.OnMessage:Connect(function(message)
     end
     jobid = data.job_id
 end)
-local raycastModule = require(replicatedStorage.Module.RayCast)
 
--- 1. Store original method safely ONCE
-getgenv().old = getgenv().old or raycastModule.RayIgnoreNonCollideWithIgnoreList
-
--- 2. Hook the function ONCE outside your toggle function
-raycastModule.RayIgnoreNonCollideWithIgnoreList = function(...)
-    -- Call original function and pack results into a table
-    local arg = {getgenv().old(...)} 
-    
-    if silentAimEnabled and aimtarget then
-        local scriptName = tostring(getfenv(2).script)
-        
-        if scriptName == "BulletEmitter" or scriptName == "Taser" then
-            arg[1] = aimtarget
-            arg[2] = aimtarget.Position
-        end
-    end
-    
-    -- Guaranteed to unpack a valid table 'arg'
-    return table.unpack(arg) 
-end
-local silentaimtoggled = false
--- 3. Toggle function just manages the state variable
-local function toggleSilentAim(state)
+local function silentAim(state, part)
     silentAimEnabled = state
-    silentaimtoggled = state
+    local raycastModule = require(replicatedStorage.Module.RayCast)
+
+    if silentAimEnabled then
+        currentTarget = part
+
+        getgenv().old = getgenv() or raycastModule.RayIgnoreNonCollideWithIgnoreList
+
+        raycastModule.RayIgnoreNonCollideWithIgnoreList = function(...)
+            local arg = {getgenv().old(...)}
+            local scriptname = tostring(getfenv(2).script)
+            if (scriptName == "BulletEmitter" or scriptName == "Taser") and currentTarget then
+                arg[1] = part
+                arg[2] = part.Position
+            end
+        end
+        return unpack(arg)
+    end
 end
 
 local function isPlayerBelowSomething(player, maxDistance)
@@ -341,7 +334,6 @@ textlabel.Parent = screenGui
 local walkspeed = 50
 local flyspeed = 120
 local carflyspeed = 300
-local constcruisealt = 500
 local cruisealt = 500
 
 local targetPlayer = nil
@@ -359,9 +351,9 @@ local searching = false
 local ignoreplayer = nil
 local cuffing = false
 
-
 local jumpwait = false
 print("VERSION: 1.3")
+
 Players.PlayerRemoving:Connect(function(plr)
     if targetPlayer then
         if plr == targetPlayer then
@@ -525,7 +517,7 @@ runService.PreSimulation:Connect(function(dt)
         if state == "targetapproach" then
             if climb then
                 carflyspeed = 250
-                cruisealt = constcruisealt+targetPlayerlastpos.Y
+                cruisealt = 500 + targetPlayerlastPos
                 if targetVehicle.PrimaryPart.Position.Y <= cruisealt then
                     targetVehicle.PrimaryPart.CFrame = CFrame.new(targetVehicle.PrimaryPart.Position+Vector3.new(0,1,0)*carflyspeed*dt)
                     targetVehicle.PrimaryPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
@@ -582,43 +574,27 @@ runService.PreSimulation:Connect(function(dt)
             end
         end
         if state == "followplayer" then
-            if silentAimEnabled == true then
-                keytap(0x01)
-            end
             character.HumanoidRootPart.Anchored = false
             if targetPlayer.Character then
                 local direction = ((targetPlayer.Character.HumanoidRootPart.Position+Vector3.new(0,6,0)) - character.HumanoidRootPart.Position).Unit
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
-                if targetPlayer.Character.HumanoidRootPart.Velocity.Magnitude > 25 then
-                    if not silentaimtoggled then
-                        for _,vehicle in pairs(workspace.Vehicles:GetChildren()) do
-                            if vehicleState(vehicle) == targetPlayer.Name then
-                                targetaim = vehicle.PrimaryPart
-                                toggleSilentAim(true)
-                                localPlayer.Folder.Pistol.InventoryEquipRemote:FireServer(true)
-                            end
-                        end
+            end
+            if (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
+                task.spawn(function()
+                    localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
+                    if not cuffing then
+                        cuffing = true
+                        keypress(0x45)
+                        task.wait(1.5)
+                        task.wait()
+                        keyrelease(0x45)
+                        task.wait()
+                        cuffing = false
                     end
-                elseif (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
-                    toggleSilentAim(false)
-                    task.spawn(function()
-                        localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
-                        if not cuffing then
-                            cuffing = true
-                            keypress(0x45)
-                            task.wait(1.5)
-                            task.wait()
-                            keyrelease(0x45)
-                            task.wait()
-                            cuffing = false
-                        end
-                    end)
-                else
-                    toggleSilentAim(false)
-                end
-                if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
+                end)
+            end
+            if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
                     state = "vehiclefind"
-                end
             end
             if targetPlayer.Folder:FindFirstChild("Cuffed") then
                 local newplayer = getSortedBounties(targetPlayer)
