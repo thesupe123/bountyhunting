@@ -536,7 +536,7 @@ runService.PreSimulation:Connect(function(dt)
                 targetVehicle.PrimaryPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
                 local fakeplayer = Vector3.new(character.HumanoidRootPart.Position.X, cruisealt, character.HumanoidRootPart.Position.Z)
                 local faketarget = Vector3.new(targetPlayer.Character.HumanoidRootPart.Position.X, cruisealt, targetPlayer.Character.HumanoidRootPart.Position.Z)
-                if (faketarget-fakeplayer).Magnitude < 5 then
+                if (faketarget-fakeplayer).Magnitude < 5 and not jumpwait then
                      if isPlayerBelowSomething(targetPlayer, 20) then
                         state = "locatetarget"
                         ignoreplayer = targetPlayer
