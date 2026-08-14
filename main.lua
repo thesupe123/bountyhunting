@@ -227,30 +227,33 @@ ws.OnMessage:Connect(function(message)
     end
     jobid = data.job_id
 end)
-local silentAimEnabled = state
+local raycastModule = require(replicatedStorage.Module.RayCast)
 
-local function silentAim()
-    local raycastModule = require(replicatedStorage.Module.RayCast)
+-- 1. Store original method safely ONCE
+getgenv().old = getgenv().old or raycastModule.RayIgnoreNonCollideWithIgnoreList
+
+-- 2. Hook the function ONCE outside your toggle function
+raycastModule.RayIgnoreNonCollideWithIgnoreList = function(...)
+    -- Call original function and pack results into a table
+    local arg = {getgenv().old(...)} 
     
-    if silentAimEnabled then
-        currentTarget = targetaim
+    if silentAimEnabled and aimtarget then
+        local scriptName = tostring(getfenv(2).script)
         
-        -- Correctly store the original function once
-        getgenv().old = getgenv().old or raycastModule.RayIgnoreNonCollideWithIgnoreList
-        
-        -- Hook the module method
-        raycastModule.RayIgnoreNonCollideWithIgnoreList = function(...)
-            local arg = {getgenv().old(...)}
-            local scriptName = tostring(getfenv(2).script) -- Fixed variable casing
-            
-            if (scriptName == "BulletEmitter" or scriptName == "Taser") and currentTarget then
-                arg[1] = targetaim
-                arg[2] = targetaim.Position
-            end
-            
-            return unpack(arg) -- Placed inside the function body
+        if scriptName == "BulletEmitter" or scriptName == "Taser" then
+            arg[1] = aimtarget
+            arg[2] = aimtarget.Position
         end
     end
+    
+    -- Guaranteed to unpack a valid table 'arg'
+    return table.unpack(arg) 
+end
+local silentaimtoggled = false
+-- 3. Toggle function just manages the state variable
+local function toggleSilentAim(state)
+    silentAimEnabled = state
+    silentaimtoggled = state
 end
 
 local function isPlayerBelowSomething(player, maxDistance)
@@ -355,9 +358,9 @@ local searching = false
 local ignoreplayer = nil
 local cuffing = false
 
+
 local jumpwait = false
 print("VERSION: 1.3")
-silentAim(false)
 Players.PlayerRemoving:Connect(function(plr)
     if targetPlayer then
         if plr == targetPlayer then
@@ -586,17 +589,17 @@ runService.PreSimulation:Connect(function(dt)
                 local direction = ((targetPlayer.Character.HumanoidRootPart.Position+Vector3.new(0,6,0)) - character.HumanoidRootPart.Position).Unit
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
                 if targetPlayer.Character.HumanoidRootPart.Velocity.Magnitude > 25 then
-                    if not silentAimEnabled then
+                    if not silentaimtoggled then
                         for _,vehicle in pairs(workspace.Vehicles:GetChildren()) do
                             if vehicleState(vehicle) == targetPlayer.Name then
                                 targetaim = vehicle.PrimaryPart
-                                silentAimEnabled = true
+                                toggleSilentAim(true)
                                 localPlayer.Folder.Pistol.InventoryEquipRemote:FireServer(true)
                             end
                         end
                     end
                 elseif (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
-                    silentAimEnabled = false
+                    toggleSilentAim(false)
                     task.spawn(function()
                         localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
                         if not cuffing then
@@ -610,7 +613,7 @@ runService.PreSimulation:Connect(function(dt)
                         end
                     end)
                 else
-                    silentAimEnabled = false
+                    toggleSilentAim(false)
                 end
             end
             if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
