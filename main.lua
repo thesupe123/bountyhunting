@@ -578,23 +578,23 @@ runService.PreSimulation:Connect(function(dt)
             if targetPlayer.Character then
                 local direction = ((targetPlayer.Character.HumanoidRootPart.Position+Vector3.new(0,6,0)) - character.HumanoidRootPart.Position).Unit
                 character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position+ direction*flyspeed*dt)
-            end
-            if (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
-                task.spawn(function()
-                    localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
-                    if not cuffing then
-                        cuffing = true
-                        keypress(0x45)
-                        task.wait(1.5)
-                        task.wait()
-                        keyrelease(0x45)
-                        task.wait()
-                        cuffing = false
-                    end
-                end)
-            end
-            if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
-                    state = "vehiclefind"
+                if (character.HumanoidRootPart.Position-targetPlayer.Character.HumanoidRootPart.Position).Magnitude < 10 then
+                    task.spawn(function()
+                        localPlayer.Folder.Handcuffs.InventoryEquipRemote:FireServer(true)
+                        if not cuffing then
+                            cuffing = true
+                            keypress(0x45)
+                            task.wait(1.5)
+                            task.wait()
+                            keyrelease(0x45)
+                            task.wait()
+                            cuffing = false
+                        end
+                    end)
+                end
+                if (targetPlayer.Character.HumanoidRootPart.Position-character.HumanoidRootPart.Position).Magnitude > 150 then
+                        state = "vehiclefind"
+                end
             end
             if targetPlayer.Folder:FindFirstChild("Cuffed") then
                 local newplayer = getSortedBounties(targetPlayer)
